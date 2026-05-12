@@ -1,0 +1,34 @@
+name: Update Market Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 10 1 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-market-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update market data
+        run: npm run update-data
+
+      - name: Commit updated market data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update market data"
+          file_pattern: data/market-data.json
