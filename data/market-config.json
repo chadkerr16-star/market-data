@@ -1,0 +1,43 @@
+{
+  "brand": {
+    "name": "Your Home Sold Guaranteed Realty – Kerr Team",
+    "shortName": "Kerr Team",
+    "phone": "330-3000",
+    "textKeyword": "VALUE",
+    "website": "kerrteam.com"
+  },
+  "markets": [
+    {
+      "marketName": "Oklahoma City Metro",
+      "state": "OK",
+      "seriesId": "MEDDAYONMAR36420",
+      "sourceName": "FRED / Realtor.com Housing Inventory",
+      "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+      "cities": ["Oklahoma City", "OKC", "Norman", "Edmond", "Moore", "Noble", "Tuttle", "Yukon", "Mustang", "Newcastle", "Piedmont", "Choctaw", "Midwest City", "Del City", "Bethany", "The Village", "Nichols Hills", "Blanchard", "Harrah", "Jones"]
+    },
+    {
+      "marketName": "Tulsa Metro",
+      "state": "OK",
+      "seriesId": "MEDDAYONMAR46140",
+      "sourceName": "FRED / Realtor.com Housing Inventory",
+      "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR46140",
+      "cities": ["Tulsa", "Broken Arrow", "Bixby", "Jenks", "Owasso", "Sand Springs", "Sapulpa", "Claremore", "Glenpool", "Collinsville"]
+    },
+    {
+      "marketName": "Lawton Metro",
+      "state": "OK",
+      "seriesId": "MEDDAYONMAR30020",
+      "sourceName": "FRED / Realtor.com Housing Inventory",
+      "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR30020",
+      "cities": ["Lawton", "Cache", "Elgin", "Fletcher", "Medicine Park", "Geronimo"]
+    },
+    {
+      "marketName": "Enid Metro",
+      "state": "OK",
+      "seriesId": "MEDDAYONMAR21420",
+      "sourceName": "FRED / Realtor.com Housing Inventory",
+      "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR21420",
+      "cities": ["Enid", "North Enid", "Waukomis", "Garber", "Hennessey"]
+    }
+  ]
+}

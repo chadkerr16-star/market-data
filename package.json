@@ -1,0 +1,9 @@
+{
+  "name": "home-days-to-sell-automatic-data",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "update": "node scripts/update-fred-data.mjs"
+  }
+}
