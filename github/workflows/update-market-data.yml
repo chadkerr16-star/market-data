@@ -1,0 +1,32 @@
+name: Update market data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs monthly on the 2nd at 8:30 AM UTC.
+    # FRED/Realtor.com housing inventory data is normally monthly, not live minute-by-minute.
+    - cron: '30 8 2 * *'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update public market data
+        run: npm run update
+
+      - name: Commit updated data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Update market data'
+          file_pattern: 'market-data.json market-history.json'
