@@ -1,101 +1,83 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import fs from "fs/promises";
 
-const configPath = path.join(process.cwd(), 'data', 'market-config.json');
-const outputPath = path.join(process.cwd(), 'market-data.json');
-const historyPath = path.join(process.cwd(), 'market-history.json');
+const CONFIG_PATH = "data/market-config.json";
+const OUTPUT_PATH = "data/market-data.json";
 
-function parseFredCsv(csv) {
-  const lines = csv.trim().split(/\r?\n/).filter(Boolean);
-  const rows = lines.slice(1).map(line => {
-    const [date, value] = line.split(',');
-    return { date, value: value === '.' ? null : Number(value) };
-  }).filter(row => row.value !== null && !Number.isNaN(row.value));
-  return rows;
-}
+function parseFredCsv(csvText, seriesId) {
+  const lines = csvText.trim().split(/\r?\n/);
 
-function monthLabel(dateString) {
-  const date = new Date(`${dateString}T00:00:00Z`);
-  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
-}
-
-function marketSpeed(days) {
-  if (days <= 45) return 'Fast';
-  if (days <= 65) return 'Normal';
-  return 'Slower';
-}
-
-function sellerInsight(days, marketName) {
-  if (days <= 45) {
-    return `${marketName} is moving relatively quickly. Well-priced homes may attract buyer activity faster, but condition and pricing still matter.`;
+  if (lines.length < 2) {
+    throw new Error(`FRED returned no rows for ${seriesId}`);
   }
-  if (days <= 65) {
-    return `${marketName} is moving at a more normal pace. Sellers should expect buyers to compare price, condition, and value carefully.`;
-  }
-  return `${marketName} is taking longer to move. Strong pricing, preparation, and marketing can make a meaningful difference.`;
-}
 
-async function fetchSeries(seriesId) {
-  const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(seriesId)}`;
-  const response = await fetch(url, { headers: { 'user-agent': 'KerrTeamDaysToSellBot/1.0' } });
-  if (!response.ok) throw new Error(`Failed to fetch ${seriesId}: ${response.status} ${response.statusText}`);
-  const csv = await response.text();
-  return parseFredCsv(csv);
+  const rows = lines
+    .slice(1)
+    .map((line) => {
+      const [date, value] = line.split(",");
+      return { date, value };
+    })
+    .filter((row) => row.value && row.value !== "." && !Number.isNaN(Number(row.value)));
+
+  if (!rows.length) {
+    throw new Error(`No valid values found for ${seriesId}`);
+  }
+
+  const latest = rows[rows.length - 1];
+  const previousYear = rows.length >= 13 ? rows[rows.length - 13] : null;
+
+  return {
+    latestDate: latest.date,
+    medianDaysOnMarket: Math.round(Number(latest.value)),
+    previousYearDate: previousYear ? previousYear.date : null,
+    previousYearDaysOnMarket: previousYear ? Math.round(Number(previousYear.value)) : null,
+  };
 }
 
 async function main() {
-  const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
-  const generatedAt = new Date().toISOString();
+  const configText = await fs.readFile(CONFIG_PATH, "utf8");
+  const config = JSON.parse(configText);
+
   const markets = [];
-  const history = {};
 
   for (const market of config.markets) {
-    try {
-      const rows = await fetchSeries(market.seriesId);
-      const latest = rows.at(-1);
-      const previousYearRow = rows.find(row => row.date === latest.date.replace(/^([0-9]{4})/, String(Number(latest.date.slice(0, 4)) - 1)));
-      const previousMonth = rows.at(-2);
+    const fredUrl = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(
+      market.seriesId
+    )}`;
 
-      const latestValue = Math.round(latest.value);
-      const previousYearValue = previousYearRow ? Math.round(previousYearRow.value) : null;
-      const previousMonthValue = previousMonth ? Math.round(previousMonth.value) : null;
+    console.log(`Fetching ${market.marketName}: ${market.seriesId}`);
 
-      markets.push({
-        marketName: market.marketName,
-        state: market.state,
-        cities: market.cities,
-        medianDaysOnMarket: latestValue,
-        previousYearDaysOnMarket: previousYearValue,
-        previousMonthDaysOnMarket: previousMonthValue,
-        latestMonth: latest.date,
-        latestMonthLabel: monthLabel(latest.date),
-        speed: marketSpeed(latestValue),
-        insight: sellerInsight(latestValue, market.marketName),
-        sourceName: market.sourceName,
-        sourceUrl: market.sourceUrl,
-        seriesId: market.seriesId
-      });
+    const response = await fetch(fredUrl);
 
-      history[market.marketName] = rows.slice(-24);
-    } catch (error) {
-      console.error(error.message);
+    if (!response.ok) {
+      throw new Error(`Could not fetch ${market.seriesId}: ${response.status}`);
     }
+
+    const csvText = await response.text();
+    const parsed = parseFredCsv(csvText, market.seriesId);
+
+    markets.push({
+      marketName: market.marketName,
+      state: market.state,
+      seriesId: market.seriesId,
+      sourceName: market.sourceName,
+      sourceUrl: market.sourceUrl,
+      cities: market.cities,
+      ...parsed,
+    });
   }
 
   const output = {
-    generatedAt,
     brand: config.brand,
-    metric: 'Median Days on Market',
-    note: 'This is automated public monthly market data. City searches may map to the surrounding metro when city-level public data is unavailable.',
-    markets
+    updatedAt: new Date().toISOString(),
+    markets,
   };
 
-  await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
-  await fs.writeFile(historyPath, JSON.stringify({ generatedAt, history }, null, 2));
-  console.log(`Wrote ${outputPath} with ${markets.length} markets.`);
+  await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, 2), "utf8");
+
+  console.log(`Wrote ${OUTPUT_PATH}`);
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
