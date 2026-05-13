@@ -1,7 +1,5 @@
 import fs from "fs/promises";
-import { createWriteStream } from "fs";
 import { Readable } from "stream";
-import { pipeline } from "stream/promises";
 import zlib from "zlib";
 import readline from "readline";
 
@@ -11,8 +9,6 @@ const OUTPUT_PATH = "data/market-data.json";
 const REDFIN_CITY_DATA_URL =
   "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/city_market_tracker.tsv000.gz";
 
-const TARGET_STATE = "OK";
-
 const BRAND_DEFAULTS = {
   name: "Your Home Sold Guaranteed Realty – Kerr Team",
   phone: "330-3000",
@@ -20,20 +16,49 @@ const BRAND_DEFAULTS = {
   website: "kerrteam.com"
 };
 
+const TARGET_CITIES = [
+  "Edmond",
+  "Moore",
+  "Mustang",
+  "Norman",
+  "Oklahoma City",
+  "Yukon",
+  "Noble",
+  "Tuttle",
+  "Tulsa",
+  "Lawton",
+  "Enid",
+  "Stillwater",
+  "Broken Arrow",
+  "Midwest City",
+  "Del City",
+  "Bethany",
+  "Piedmont",
+  "Blanchard"
+];
+
 function clean(value) {
   return String(value || "").trim();
 }
 
 function toNumber(value) {
   const cleaned = clean(value).replace(/[$,%]/g, "");
+  if (!cleaned || cleaned.toUpperCase() === "NA") return null;
   const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
+}
+
+function normalizeText(value) {
+  return clean(value).toLowerCase();
 }
 
 function normalizeCityName(value) {
   return clean(value)
     .replace(/, Oklahoma$/i, "")
     .replace(/, OK$/i, "")
+    .replace(/\s+city$/i, function (match, offset, full) {
+      return /oklahoma city/i.test(full) ? match : "";
+    })
     .trim();
 }
 
@@ -65,20 +90,144 @@ function buildRow(headers, values) {
   return row;
 }
 
+function rowLooksLikeOklahoma(row) {
+  const combined = Object.values(row).map(clean).join(" | ").toLowerCase();
+
+  return (
+    combined.includes(", ok") ||
+    combined.includes("oklahoma") ||
+    combined.includes("oklahoma city")
+  );
+}
+
+function getPossibleRegionName(row) {
+  return clean(
+    getHeaderValue(row, [
+      "region_name",
+      "regionName",
+      "region",
+      "city",
+      "place",
+      "name"
+    ])
+  );
+}
+
+function getPossibleState(row) {
+  return clean(
+    getHeaderValue(row, [
+      "state_code",
+      "stateCode",
+      "state",
+      "state_name",
+      "stateName"
+    ])
+  );
+}
+
+function cityMatchesTarget(regionName, targetCity) {
+  const region = normalizeText(regionName);
+  const city = normalizeText(targetCity);
+
+  return (
+    region === city ||
+    region === city + ", ok" ||
+    region === city + ", oklahoma" ||
+    region.startsWith(city + ",") ||
+    region.includes(city + ", ok") ||
+    region.includes(city + ", oklahoma")
+  );
+}
+
+function getTargetCityFromRow(row) {
+  const regionName = getPossibleRegionName(row);
+
+  for (const city of TARGET_CITIES) {
+    if (cityMatchesTarget(regionName, city)) {
+      return city;
+    }
+  }
+
+  return "";
+}
+
+function getPeriodEnd(row) {
+  return clean(
+    getHeaderValue(row, [
+      "period_end",
+      "periodEnd",
+      "period_end_date",
+      "end_date"
+    ])
+  );
+}
+
+function getPeriodBegin(row) {
+  return clean(
+    getHeaderValue(row, [
+      "period_begin",
+      "periodBegin",
+      "period_begin_date",
+      "start_date"
+    ])
+  );
+}
+
+function getMedianDom(row) {
+  return toNumber(
+    getHeaderValue(row, [
+      "median_dom",
+      "median_days_on_market",
+      "medianDaysOnMarket",
+      "median_days_on_market_all",
+      "days_on_market"
+    ])
+  );
+}
+
+function getMedianDomYoy(row) {
+  return toNumber(
+    getHeaderValue(row, [
+      "median_dom_yoy",
+      "median_days_on_market_yoy",
+      "medianDaysOnMarketYoy"
+    ])
+  );
+}
+
+function getMedianSalePrice(row) {
+  return toNumber(
+    getHeaderValue(row, [
+      "median_sale_price",
+      "medianSalePrice",
+      "median_sale_price_all"
+    ])
+  );
+}
+
+function getHomesSold(row) {
+  return toNumber(
+    getHeaderValue(row, [
+      "homes_sold",
+      "homesSold",
+      "homes_sold_all"
+    ])
+  );
+}
+
 function pickBestRowsByCity(rows) {
   const latestByCity = new Map();
 
   for (const row of rows) {
-    const city = row.cityName;
-    const existing = latestByCity.get(city);
+    const existing = latestByCity.get(row.cityName);
 
     if (!existing) {
-      latestByCity.set(city, row);
+      latestByCity.set(row.cityName, row);
       continue;
     }
 
-    if (row.periodEnd > existing.periodEnd) {
-      latestByCity.set(city, row);
+    if ((row.periodEnd || "") > (existing.periodEnd || "")) {
+      latestByCity.set(row.cityName, row);
     }
   }
 
@@ -105,73 +254,65 @@ async function fetchRedfinCityData() {
   });
 
   let headers = null;
-  const allOklahomaRows = [];
+  const matchedRows = [];
+  let scannedRows = 0;
+  let cityNameMatches = 0;
+  let oklahomaMatches = 0;
 
   for await (const line of lineReader) {
     if (!line || !line.trim()) continue;
 
     if (!headers) {
       headers = parseTsvLine(line);
+      console.log("Redfin headers found:");
+      console.log(headers.join(", "));
       continue;
     }
+
+    scannedRows++;
 
     const values = parseTsvLine(line);
     const row = buildRow(headers, values);
 
-    const stateCode = clean(
-      getHeaderValue(row, ["state_code", "state", "stateCode"])
-    );
+    const targetCity = getTargetCityFromRow(row);
+    if (!targetCity) continue;
 
-    if (stateCode !== TARGET_STATE) continue;
+    cityNameMatches++;
 
-    const propertyType = clean(
+    const possibleState = getPossibleState(row);
+    const looksOklahoma =
+      possibleState === "OK" ||
+      /oklahoma/i.test(possibleState) ||
+      rowLooksLikeOklahoma(row);
+
+    if (!looksOklahoma) continue;
+
+    oklahomaMatches++;
+
+    const propertyType = normalizeText(
       getHeaderValue(row, ["property_type", "propertyType"])
-    ).toLowerCase();
+    );
 
     const periodDuration = clean(
       getHeaderValue(row, ["period_duration", "periodDuration"])
     );
 
-    const isSeasonallyAdjusted = clean(
+    const isSeasonallyAdjusted = normalizeText(
       getHeaderValue(row, ["is_seasonally_adjusted", "isSeasonallyAdjusted"])
-    ).toLowerCase();
+    );
 
     if (propertyType && propertyType !== "all residential") continue;
     if (periodDuration && periodDuration !== "30") continue;
     if (isSeasonallyAdjusted === "true") continue;
 
-    const rawCity =
-      getHeaderValue(row, ["city", "region", "region_name", "regionName"]);
-
-    const cityName = normalizeCityName(rawCity);
-
-    if (!cityName) continue;
-
-    const medianDaysOnMarket = toNumber(
-      getHeaderValue(row, ["median_dom", "median_days_on_market", "medianDaysOnMarket"])
-    );
-
+    const medianDaysOnMarket = getMedianDom(row);
     if (medianDaysOnMarket === null) continue;
 
-    const medianDomYoy = toNumber(
-      getHeaderValue(row, ["median_dom_yoy", "median_days_on_market_yoy", "medianDaysOnMarketYoy"])
-    );
-
-    const medianSalePrice = toNumber(
-      getHeaderValue(row, ["median_sale_price", "medianSalePrice"])
-    );
-
-    const homesSold = toNumber(
-      getHeaderValue(row, ["homes_sold", "homesSold"])
-    );
-
-    const periodEnd = clean(
-      getHeaderValue(row, ["period_end", "periodEnd"])
-    );
-
-    const periodBegin = clean(
-      getHeaderValue(row, ["period_begin", "periodBegin"])
-    );
+    const medianDomYoy = getMedianDomYoy(row);
+    const medianSalePrice = getMedianSalePrice(row);
+    const homesSold = getHomesSold(row);
+    const periodEnd = getPeriodEnd(row);
+    const periodBegin = getPeriodBegin(row);
 
     let previousYearDaysOnMarket = null;
 
@@ -179,10 +320,10 @@ async function fetchRedfinCityData() {
       previousYearDaysOnMarket = Math.round(medianDaysOnMarket - medianDomYoy);
     }
 
-    allOklahomaRows.push({
-      cityName,
-      state: TARGET_STATE,
-      marketName: `${cityName}, OK`,
+    matchedRows.push({
+      cityName: targetCity,
+      state: "OK",
+      marketName: `${targetCity}, OK`,
       periodBegin,
       periodEnd,
       medianDaysOnMarket: Math.round(medianDaysOnMarket),
@@ -195,10 +336,17 @@ async function fetchRedfinCityData() {
     });
   }
 
-  const latestRows = pickBestRowsByCity(allOklahomaRows);
+  console.log(`Redfin rows scanned: ${scannedRows}`);
+  console.log(`Target city name matches: ${cityNameMatches}`);
+  console.log(`Oklahoma target matches: ${oklahomaMatches}`);
+  console.log(`Usable Redfin city rows: ${matchedRows.length}`);
+
+  const latestRows = pickBestRowsByCity(matchedRows);
 
   if (!latestRows.length) {
-    throw new Error("No Oklahoma city-level rows found in Redfin data.");
+    throw new Error(
+      "No usable Oklahoma city-level rows found in Redfin data after flexible matching."
+    );
   }
 
   console.log(`Found ${latestRows.length} Oklahoma city-level Redfin markets.`);
