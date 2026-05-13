@@ -150,46 +150,86 @@ function getSeasonallyAdjusted(row) {
   return normalize(getValue(row, ["is_seasonally_adjusted", "isseasonallyadjusted"]));
 }
 
+function findNumberByKeyPattern(row, includeWords, excludeWords = []) {
+  for (const key of Object.keys(row)) {
+    const normalizedKey = normalizeHeader(key);
+
+    const includesAll = includeWords.every(function (word) {
+      return normalizedKey.includes(normalizeHeader(word));
+    });
+
+    const excludesAny = excludeWords.some(function (word) {
+      return normalizedKey.includes(normalizeHeader(word));
+    });
+
+    if (includesAll && !excludesAny) {
+      const number = toNumber(row[key]);
+      if (number !== null) return number;
+    }
+  }
+
+  return null;
+}
+
 function getMedianDom(row) {
-  return toNumber(
-    getValue(row, [
-      "median_dom",
-      "median_days_on_market",
-      "mediandom",
-      "mediandaysonmarket",
-      "days_on_market"
-    ])
+  return (
+    toNumber(
+      getValue(row, [
+        "median_dom",
+        "median_days_on_market",
+        "median_days_to_sell",
+        "mediandom",
+        "mediandaysonmarket",
+        "days_on_market"
+      ])
+    ) ??
+    findNumberByKeyPattern(row, ["median", "dom"], ["yoy", "mom"]) ??
+    findNumberByKeyPattern(row, ["days", "market"], ["yoy", "mom"]) ??
+    findNumberByKeyPattern(row, ["dom"], ["yoy", "mom"])
   );
 }
 
 function getMedianDomYoy(row) {
-  return toNumber(
-    getValue(row, [
-      "median_dom_yoy",
-      "median_days_on_market_yoy",
-      "mediandomyoy",
-      "mediandaysonmarketyoy"
-    ])
+  return (
+    toNumber(
+      getValue(row, [
+        "median_dom_yoy",
+        "median_days_on_market_yoy",
+        "median_days_to_sell_yoy",
+        "mediandomyoy",
+        "mediandaysonmarketyoy"
+      ])
+    ) ??
+    findNumberByKeyPattern(row, ["dom", "yoy"]) ??
+    findNumberByKeyPattern(row, ["days", "market", "yoy"])
   );
 }
 
 function getMedianSalePrice(row) {
-  return toNumber(
-    getValue(row, [
-      "median_sale_price",
-      "mediansaleprice",
-      "median_price"
-    ])
+  return (
+    toNumber(
+      getValue(row, [
+        "median_sale_price",
+        "mediansaleprice",
+        "median_price"
+      ])
+    ) ??
+    findNumberByKeyPattern(row, ["median", "sale", "price"], ["yoy", "mom"]) ??
+    findNumberByKeyPattern(row, ["median", "price"], ["yoy", "mom"])
   );
 }
 
 function getHomesSold(row) {
-  return toNumber(
-    getValue(row, [
-      "homes_sold",
-      "homessold",
-      "sold_count"
-    ])
+  return (
+    toNumber(
+      getValue(row, [
+        "homes_sold",
+        "homessold",
+        "sold_count"
+      ])
+    ) ??
+    findNumberByKeyPattern(row, ["homes", "sold"], ["yoy", "mom"]) ??
+    findNumberByKeyPattern(row, ["sold"], ["yoy", "mom"])
   );
 }
 
