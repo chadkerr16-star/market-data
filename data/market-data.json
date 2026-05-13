@@ -7,18 +7,83 @@
     "shortName": "Kerr Team"
   },
   "dataMode": "redfin-city-level",
-  "updatedAt": "2026-05-13T02:04:19.966Z",
+  "updatedAt": "2026-05-13T02:10:16.277Z",
   "markets": [
+    {
+      "marketName": "Bethany, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 21,
+      "previousYearDaysOnMarket": 16,
+      "medianSalePrice": 182500,
+      "homesSold": 12,
+      "speed": "Fast",
+      "cities": [
+        "Bethany"
+      ]
+    },
+    {
+      "marketName": "Blanchard, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 85,
+      "previousYearDaysOnMarket": 55,
+      "medianSalePrice": 356500,
+      "homesSold": 22,
+      "speed": "Slower",
+      "cities": [
+        "Blanchard"
+      ]
+    },
+    {
+      "marketName": "Broken Arrow, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 53,
+      "previousYearDaysOnMarket": 43,
+      "medianSalePrice": 304000,
+      "homesSold": 158,
+      "speed": "Normal",
+      "cities": [
+        "Broken Arrow"
+      ]
+    },
+    {
+      "marketName": "Del City, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 36,
+      "previousYearDaysOnMarket": 37,
+      "medianSalePrice": 139900,
+      "homesSold": 19,
+      "speed": "Fast",
+      "cities": [
+        "Del City"
+      ]
+    },
     {
       "marketName": "Edmond, OK",
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 8,
-      "previousYearDaysOnMarket": 29,
-      "medianSalePrice": 192000,
-      "homesSold": 8,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 37,
+      "previousYearDaysOnMarket": 44,
+      "medianSalePrice": 399170,
+      "homesSold": 156,
       "speed": "Fast",
       "cities": [
         "Edmond"
@@ -29,12 +94,13 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 55,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 69,
       "previousYearDaysOnMarket": 67,
-      "medianSalePrice": 137500,
-      "homesSold": 87,
-      "speed": "Normal",
+      "medianSalePrice": 164250,
+      "homesSold": 49,
+      "speed": "Slower",
       "cities": [
         "Enid"
       ]
@@ -44,14 +110,31 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 100,
-      "previousYearDaysOnMarket": null,
-      "medianSalePrice": 47500,
-      "homesSold": 1,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 94,
+      "previousYearDaysOnMarket": 67,
+      "medianSalePrice": 140500,
+      "homesSold": 89,
       "speed": "Slower",
       "cities": [
         "Lawton"
+      ]
+    },
+    {
+      "marketName": "Midwest City, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 48,
+      "previousYearDaysOnMarket": 47,
+      "medianSalePrice": 192250,
+      "homesSold": 52,
+      "speed": "Fast",
+      "cities": [
+        "Midwest City"
       ]
     },
     {
@@ -59,12 +142,13 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 6,
-      "previousYearDaysOnMarket": null,
-      "medianSalePrice": 141500,
-      "homesSold": 1,
-      "speed": "Fast",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 55,
+      "previousYearDaysOnMarket": 51,
+      "medianSalePrice": 235000,
+      "homesSold": 89,
+      "speed": "Normal",
       "cities": [
         "Moore"
       ]
@@ -74,14 +158,31 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 49,
-      "previousYearDaysOnMarket": 26,
-      "medianSalePrice": 204995,
-      "homesSold": 46,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 42,
+      "previousYearDaysOnMarket": 30,
+      "medianSalePrice": 260000,
+      "homesSold": 29,
       "speed": "Fast",
       "cities": [
         "Mustang"
+      ]
+    },
+    {
+      "marketName": "Noble, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 36,
+      "previousYearDaysOnMarket": 9,
+      "medianSalePrice": 235948.5,
+      "homesSold": 24,
+      "speed": "Fast",
+      "cities": [
+        "Noble"
       ]
     },
     {
@@ -89,11 +190,12 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 16,
-      "previousYearDaysOnMarket": 18,
-      "medianSalePrice": 255000,
-      "homesSold": 115,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 38,
+      "previousYearDaysOnMarket": 34,
+      "medianSalePrice": 280750,
+      "homesSold": 148,
       "speed": "Fast",
       "cities": [
         "Norman"
@@ -104,14 +206,31 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 31,
-      "previousYearDaysOnMarket": 31,
-      "medianSalePrice": 111500,
-      "homesSold": 5,
-      "speed": "Fast",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 58,
+      "previousYearDaysOnMarket": 54,
+      "medianSalePrice": 271000,
+      "homesSold": 887,
+      "speed": "Normal",
       "cities": [
         "Oklahoma City"
+      ]
+    },
+    {
+      "marketName": "Piedmont, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 47,
+      "previousYearDaysOnMarket": 85,
+      "medianSalePrice": 460000,
+      "homesSold": 11,
+      "speed": "Fast",
+      "cities": [
+        "Piedmont"
       ]
     },
     {
@@ -119,11 +238,12 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 49,
-      "previousYearDaysOnMarket": 70,
-      "medianSalePrice": 101778,
-      "homesSold": 1,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 32,
+      "previousYearDaysOnMarket": 71,
+      "medianSalePrice": 246500,
+      "homesSold": 42,
       "speed": "Fast",
       "cities": [
         "Stillwater"
@@ -134,14 +254,47 @@
       "state": "OK",
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
-      "latestDate": "",
-      "medianDaysOnMarket": 11,
-      "previousYearDaysOnMarket": 23,
-      "medianSalePrice": 260000,
-      "homesSold": 1,
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 32,
+      "previousYearDaysOnMarket": 29,
+      "medianSalePrice": 225000,
+      "homesSold": 387,
       "speed": "Fast",
       "cities": [
         "Tulsa"
+      ]
+    },
+    {
+      "marketName": "Tuttle, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 89,
+      "previousYearDaysOnMarket": 58,
+      "medianSalePrice": 342000,
+      "homesSold": 19,
+      "speed": "Slower",
+      "cities": [
+        "Tuttle"
+      ]
+    },
+    {
+      "marketName": "Yukon, OK",
+      "state": "OK",
+      "sourceName": "Redfin Data Center",
+      "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
+      "latestDate": "2026-03-31",
+      "lastUpdated": "2026-04-14 14:25:48.665 Z",
+      "medianDaysOnMarket": 15,
+      "previousYearDaysOnMarket": 20,
+      "medianSalePrice": 237000,
+      "homesSold": 27,
+      "speed": "Fast",
+      "cities": [
+        "Yukon"
       ]
     }
   ]
