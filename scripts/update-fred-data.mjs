@@ -41,25 +41,23 @@ function clean(value) {
   return String(value || "").trim();
 }
 
-function toNumber(value) {
-  const cleaned = clean(value).replace(/[$,%]/g, "");
-  if (!cleaned || cleaned.toUpperCase() === "NA") return null;
-  const number = Number(cleaned);
-  return Number.isFinite(number) ? number : null;
-}
-
-function normalizeText(value) {
+function normalize(value) {
   return clean(value).toLowerCase();
 }
 
-function normalizeCityName(value) {
+function normalizeHeader(value) {
   return clean(value)
-    .replace(/, Oklahoma$/i, "")
-    .replace(/, OK$/i, "")
-    .replace(/\s+city$/i, function (match, offset, full) {
-      return /oklahoma city/i.test(full) ? match : "";
-    })
-    .trim();
+    .replace(/^\uFEFF/, "")
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+}
+
+function toNumber(value) {
+  const cleaned = clean(value).replace(/[$,%]/g, "");
+  if (!cleaned || cleaned.toUpperCase() === "NA") return null;
+
+  const number = Number(cleaned);
+  return Number.isFinite(number) ? number : null;
 }
 
 function getSpeed(days) {
@@ -69,81 +67,62 @@ function getSpeed(days) {
   return "Slower";
 }
 
-function getHeaderValue(row, possibleNames) {
-  for (const name of possibleNames) {
-    if (row[name] !== undefined && row[name] !== null && row[name] !== "") {
-      return row[name];
-    }
-  }
-  return "";
-}
-
 function parseTsvLine(line) {
   return line.split("\t");
 }
 
 function buildRow(headers, values) {
   const row = {};
+
   headers.forEach((header, index) => {
-    row[header] = values[index] ?? "";
+    row[normalizeHeader(header)] = values[index] ?? "";
   });
+
   return row;
 }
 
-function rowLooksLikeOklahoma(row) {
-  const combined = Object.values(row).map(clean).join(" | ").toLowerCase();
+function getValue(row, names) {
+  for (const name of names) {
+    const key = normalizeHeader(name);
+    if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
+      return row[key];
+    }
+  }
+
+  return "";
+}
+
+function rowToText(row) {
+  return Object.values(row).map(clean).join(" | ");
+}
+
+function rowLooksOklahoma(row) {
+  const stateCode = normalize(getValue(row, ["state_code", "statecode"]));
+  const state = normalize(getValue(row, ["state", "state_name", "statename"]));
+  const fullText = normalize(rowToText(row));
 
   return (
-    combined.includes(", ok") ||
-    combined.includes("oklahoma") ||
-    combined.includes("oklahoma city")
+    stateCode === "ok" ||
+    state === "ok" ||
+    state === "oklahoma" ||
+    fullText.includes(", ok") ||
+    fullText.includes("oklahoma")
   );
 }
 
-function getPossibleRegionName(row) {
-  return clean(
-    getHeaderValue(row, [
-      "region_name",
-      "regionName",
-      "region",
-      "city",
-      "place",
-      "name"
-    ])
-  );
-}
-
-function getPossibleState(row) {
-  return clean(
-    getHeaderValue(row, [
-      "state_code",
-      "stateCode",
-      "state",
-      "state_name",
-      "stateName"
-    ])
-  );
-}
-
-function cityMatchesTarget(regionName, targetCity) {
-  const region = normalizeText(regionName);
-  const city = normalizeText(targetCity);
-
-  return (
-    region === city ||
-    region === city + ", ok" ||
-    region === city + ", oklahoma" ||
-    region.startsWith(city + ",") ||
-    region.includes(city + ", ok") ||
-    region.includes(city + ", oklahoma")
-  );
-}
-
-function getTargetCityFromRow(row) {
-  const regionName = getPossibleRegionName(row);
+function findTargetCity(row) {
+  const fullText = normalize(rowToText(row));
 
   for (const city of TARGET_CITIES) {
-    if (cityMatchesTarget(regionName, city)) {
+    const cityText = normalize(city);
+
+    if (
+      fullText.includes(cityText + ", ok") ||
+      fullText.includes(cityText + ", oklahoma") ||
+      fullText.includes("| " + cityText + " |") ||
+      fullText.includes("| " + cityText + ",") ||
+      fullText.includes(cityText)
+    ) {
       return city;
     }
   }
@@ -152,34 +131,32 @@ function getTargetCityFromRow(row) {
 }
 
 function getPeriodEnd(row) {
-  return clean(
-    getHeaderValue(row, [
-      "period_end",
-      "periodEnd",
-      "period_end_date",
-      "end_date"
-    ])
-  );
+  return clean(getValue(row, ["period_end", "periodend", "end_date"]));
 }
 
 function getPeriodBegin(row) {
-  return clean(
-    getHeaderValue(row, [
-      "period_begin",
-      "periodBegin",
-      "period_begin_date",
-      "start_date"
-    ])
-  );
+  return clean(getValue(row, ["period_begin", "periodbegin", "start_date"]));
+}
+
+function getPropertyType(row) {
+  return normalize(getValue(row, ["property_type", "propertytype"]));
+}
+
+function getPeriodDuration(row) {
+  return clean(getValue(row, ["period_duration", "periodduration"]));
+}
+
+function getSeasonallyAdjusted(row) {
+  return normalize(getValue(row, ["is_seasonally_adjusted", "isseasonallyadjusted"]));
 }
 
 function getMedianDom(row) {
   return toNumber(
-    getHeaderValue(row, [
+    getValue(row, [
       "median_dom",
       "median_days_on_market",
-      "medianDaysOnMarket",
-      "median_days_on_market_all",
+      "mediandom",
+      "mediandaysonmarket",
       "days_on_market"
     ])
   );
@@ -187,35 +164,36 @@ function getMedianDom(row) {
 
 function getMedianDomYoy(row) {
   return toNumber(
-    getHeaderValue(row, [
+    getValue(row, [
       "median_dom_yoy",
       "median_days_on_market_yoy",
-      "medianDaysOnMarketYoy"
+      "mediandomyoy",
+      "mediandaysonmarketyoy"
     ])
   );
 }
 
 function getMedianSalePrice(row) {
   return toNumber(
-    getHeaderValue(row, [
+    getValue(row, [
       "median_sale_price",
-      "medianSalePrice",
-      "median_sale_price_all"
+      "mediansaleprice",
+      "median_price"
     ])
   );
 }
 
 function getHomesSold(row) {
   return toNumber(
-    getHeaderValue(row, [
+    getValue(row, [
       "homes_sold",
-      "homesSold",
-      "homes_sold_all"
+      "homessold",
+      "sold_count"
     ])
   );
 }
 
-function pickBestRowsByCity(rows) {
+function pickLatestRowsByCity(rows) {
   const latestByCity = new Map();
 
   for (const row of rows) {
@@ -255,9 +233,12 @@ async function fetchRedfinCityData() {
 
   let headers = null;
   const matchedRows = [];
+
   let scannedRows = 0;
-  let cityNameMatches = 0;
-  let oklahomaMatches = 0;
+  let oklahomaRows = 0;
+  let cityMatches = 0;
+  let usableRows = 0;
+  let printedSamples = 0;
 
   for await (const line of lineReader) {
     if (!line || !line.trim()) continue;
@@ -274,32 +255,24 @@ async function fetchRedfinCityData() {
     const values = parseTsvLine(line);
     const row = buildRow(headers, values);
 
-    const targetCity = getTargetCityFromRow(row);
-    if (!targetCity) continue;
+    if (!rowLooksOklahoma(row)) continue;
+    oklahomaRows++;
 
-    cityNameMatches++;
+    const cityName = findTargetCity(row);
+    if (!cityName) {
+      if (printedSamples < 3) {
+        console.log("Sample Oklahoma row not matched to target city:");
+        console.log(rowToText(row).slice(0, 500));
+        printedSamples++;
+      }
+      continue;
+    }
 
-    const possibleState = getPossibleState(row);
-    const looksOklahoma =
-      possibleState === "OK" ||
-      /oklahoma/i.test(possibleState) ||
-      rowLooksLikeOklahoma(row);
+    cityMatches++;
 
-    if (!looksOklahoma) continue;
-
-    oklahomaMatches++;
-
-    const propertyType = normalizeText(
-      getHeaderValue(row, ["property_type", "propertyType"])
-    );
-
-    const periodDuration = clean(
-      getHeaderValue(row, ["period_duration", "periodDuration"])
-    );
-
-    const isSeasonallyAdjusted = normalizeText(
-      getHeaderValue(row, ["is_seasonally_adjusted", "isSeasonallyAdjusted"])
-    );
+    const propertyType = getPropertyType(row);
+    const periodDuration = getPeriodDuration(row);
+    const isSeasonallyAdjusted = getSeasonallyAdjusted(row);
 
     if (propertyType && propertyType !== "all residential") continue;
     if (periodDuration && periodDuration !== "30") continue;
@@ -320,10 +293,12 @@ async function fetchRedfinCityData() {
       previousYearDaysOnMarket = Math.round(medianDaysOnMarket - medianDomYoy);
     }
 
+    usableRows++;
+
     matchedRows.push({
-      cityName: targetCity,
+      cityName,
       state: "OK",
-      marketName: `${targetCity}, OK`,
+      marketName: `${cityName}, OK`,
       periodBegin,
       periodEnd,
       medianDaysOnMarket: Math.round(medianDaysOnMarket),
@@ -337,16 +312,14 @@ async function fetchRedfinCityData() {
   }
 
   console.log(`Redfin rows scanned: ${scannedRows}`);
-  console.log(`Target city name matches: ${cityNameMatches}`);
-  console.log(`Oklahoma target matches: ${oklahomaMatches}`);
-  console.log(`Usable Redfin city rows: ${matchedRows.length}`);
+  console.log(`Oklahoma rows found: ${oklahomaRows}`);
+  console.log(`Target city matches: ${cityMatches}`);
+  console.log(`Usable Redfin city rows: ${usableRows}`);
 
-  const latestRows = pickBestRowsByCity(matchedRows);
+  const latestRows = pickLatestRowsByCity(matchedRows);
 
   if (!latestRows.length) {
-    throw new Error(
-      "No usable Oklahoma city-level rows found in Redfin data after flexible matching."
-    );
+    throw new Error("No usable Oklahoma city-level rows found in Redfin data.");
   }
 
   console.log(`Found ${latestRows.length} Oklahoma city-level Redfin markets.`);
