@@ -37,27 +37,39 @@ const TARGET_CITIES = [
   "Blanchard"
 ];
 
-function clean(value) {
-  return String(value || "").trim();
-}
-
-function normalize(value) {
-  return clean(value).toLowerCase();
+function stripQuotes(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^"+|"+$/g, "");
 }
 
 function normalizeHeader(value) {
-  return clean(value)
-    .replace(/^\uFEFF/, "")
+  return stripQuotes(value)
     .toLowerCase()
     .replace(/\s+/g, "_");
+}
+
+function clean(value) {
+  return stripQuotes(value);
 }
 
 function toNumber(value) {
   const cleaned = clean(value).replace(/[$,%]/g, "");
   if (!cleaned || cleaned.toUpperCase() === "NA") return null;
-
   const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
+}
+
+function parseTsvLine(line) {
+  return line.split("\t").map(stripQuotes);
+}
+
+function buildRow(headers, values) {
+  const row = {};
+  headers.forEach((header, index) => {
+    row[normalizeHeader(header)] = values[index] ?? "";
+  });
+  return row;
 }
 
 function getSpeed(days) {
@@ -67,184 +79,13 @@ function getSpeed(days) {
   return "Slower";
 }
 
-function parseTsvLine(line) {
-  return line.split("\t");
-}
-
-function buildRow(headers, values) {
-  const row = {};
-
-  headers.forEach((header, index) => {
-    row[normalizeHeader(header)] = values[index] ?? "";
-  });
-
-  return row;
-}
-
-function getValue(row, names) {
-  for (const name of names) {
-    const key = normalizeHeader(name);
-    if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
-      return row[key];
-    }
-  }
-
-  return "";
-}
-
-function rowToText(row) {
-  return Object.values(row).map(clean).join(" | ");
-}
-
-function rowLooksOklahoma(row) {
-  const stateCode = normalize(getValue(row, ["state_code", "statecode"]));
-  const state = normalize(getValue(row, ["state", "state_name", "statename"]));
-  const fullText = normalize(rowToText(row));
-
-  return (
-    stateCode === "ok" ||
-    state === "ok" ||
-    state === "oklahoma" ||
-    fullText.includes(", ok") ||
-    fullText.includes("oklahoma")
-  );
-}
-
-function findTargetCity(row) {
-  const fullText = normalize(rowToText(row));
-
-  for (const city of TARGET_CITIES) {
-    const cityText = normalize(city);
-
-    if (
-      fullText.includes(cityText + ", ok") ||
-      fullText.includes(cityText + ", oklahoma") ||
-      fullText.includes("| " + cityText + " |") ||
-      fullText.includes("| " + cityText + ",") ||
-      fullText.includes(cityText)
-    ) {
-      return city;
-    }
-  }
-
-  return "";
-}
-
-function getPeriodEnd(row) {
-  return clean(getValue(row, ["period_end", "periodend", "end_date"]));
-}
-
-function getPeriodBegin(row) {
-  return clean(getValue(row, ["period_begin", "periodbegin", "start_date"]));
-}
-
-function getPropertyType(row) {
-  return normalize(getValue(row, ["property_type", "propertytype"]));
-}
-
-function getPeriodDuration(row) {
-  return clean(getValue(row, ["period_duration", "periodduration"]));
-}
-
-function getSeasonallyAdjusted(row) {
-  return normalize(getValue(row, ["is_seasonally_adjusted", "isseasonallyadjusted"]));
-}
-
-function findNumberByKeyPattern(row, includeWords, excludeWords = []) {
-  for (const key of Object.keys(row)) {
-    const normalizedKey = normalizeHeader(key);
-
-    const includesAll = includeWords.every(function (word) {
-      return normalizedKey.includes(normalizeHeader(word));
-    });
-
-    const excludesAny = excludeWords.some(function (word) {
-      return normalizedKey.includes(normalizeHeader(word));
-    });
-
-    if (includesAll && !excludesAny) {
-      const number = toNumber(row[key]);
-      if (number !== null) return number;
-    }
-  }
-
-  return null;
-}
-
-function getMedianDom(row) {
-  return (
-    toNumber(
-      getValue(row, [
-        "median_dom",
-        "median_days_on_market",
-        "median_days_to_sell",
-        "mediandom",
-        "mediandaysonmarket",
-        "days_on_market"
-      ])
-    ) ??
-    findNumberByKeyPattern(row, ["median", "dom"], ["yoy", "mom"]) ??
-    findNumberByKeyPattern(row, ["days", "market"], ["yoy", "mom"]) ??
-    findNumberByKeyPattern(row, ["dom"], ["yoy", "mom"])
-  );
-}
-
-function getMedianDomYoy(row) {
-  return (
-    toNumber(
-      getValue(row, [
-        "median_dom_yoy",
-        "median_days_on_market_yoy",
-        "median_days_to_sell_yoy",
-        "mediandomyoy",
-        "mediandaysonmarketyoy"
-      ])
-    ) ??
-    findNumberByKeyPattern(row, ["dom", "yoy"]) ??
-    findNumberByKeyPattern(row, ["days", "market", "yoy"])
-  );
-}
-
-function getMedianSalePrice(row) {
-  return (
-    toNumber(
-      getValue(row, [
-        "median_sale_price",
-        "mediansaleprice",
-        "median_price"
-      ])
-    ) ??
-    findNumberByKeyPattern(row, ["median", "sale", "price"], ["yoy", "mom"]) ??
-    findNumberByKeyPattern(row, ["median", "price"], ["yoy", "mom"])
-  );
-}
-
-function getHomesSold(row) {
-  return (
-    toNumber(
-      getValue(row, [
-        "homes_sold",
-        "homessold",
-        "sold_count"
-      ])
-    ) ??
-    findNumberByKeyPattern(row, ["homes", "sold"], ["yoy", "mom"]) ??
-    findNumberByKeyPattern(row, ["sold"], ["yoy", "mom"])
-  );
-}
-
 function pickLatestRowsByCity(rows) {
   const latestByCity = new Map();
 
   for (const row of rows) {
     const existing = latestByCity.get(row.cityName);
 
-    if (!existing) {
-      latestByCity.set(row.cityName, row);
-      continue;
-    }
-
-    if ((row.periodEnd || "") > (existing.periodEnd || "")) {
+    if (!existing || row.periodEnd > existing.periodEnd) {
       latestByCity.set(row.cityName, row);
     }
   }
@@ -276,9 +117,8 @@ async function fetchRedfinCityData() {
 
   let scannedRows = 0;
   let oklahomaRows = 0;
-  let cityMatches = 0;
+  let targetCityRows = 0;
   let usableRows = 0;
-  let printedSamples = 0;
 
   for await (const line of lineReader) {
     if (!line || !line.trim()) continue;
@@ -295,37 +135,33 @@ async function fetchRedfinCityData() {
     const values = parseTsvLine(line);
     const row = buildRow(headers, values);
 
-    if (!rowLooksOklahoma(row)) continue;
+    const cityName = clean(row.city);
+    const stateCode = clean(row.state_code);
+    const regionType = clean(row.region_type).toLowerCase();
+    const propertyType = clean(row.property_type).toLowerCase();
+    const periodDuration = clean(row.period_duration);
+    const isSeasonallyAdjusted = clean(row.is_seasonally_adjusted).toLowerCase();
+
+    if (stateCode !== "OK") continue;
     oklahomaRows++;
 
-    const cityName = findTargetCity(row);
-    if (!cityName) {
-      if (printedSamples < 3) {
-        console.log("Sample Oklahoma row not matched to target city:");
-        console.log(rowToText(row).slice(0, 500));
-        printedSamples++;
-      }
-      continue;
-    }
+    if (!TARGET_CITIES.includes(cityName)) continue;
+    targetCityRows++;
 
-    cityMatches++;
+    if (regionType !== "place") continue;
+    if (propertyType !== "all residential") continue;
+    if (periodDuration !== "30") continue;
+    if (isSeasonallyAdjusted !== "false") continue;
 
-    const propertyType = getPropertyType(row);
-    const periodDuration = getPeriodDuration(row);
-    const isSeasonallyAdjusted = getSeasonallyAdjusted(row);
-
-    if (propertyType && propertyType !== "all residential") continue;
-    if (periodDuration && periodDuration !== "30") continue;
-    if (isSeasonallyAdjusted === "true") continue;
-
-    const medianDaysOnMarket = getMedianDom(row);
+    const medianDaysOnMarket = toNumber(row.median_dom);
     if (medianDaysOnMarket === null) continue;
 
-    const medianDomYoy = getMedianDomYoy(row);
-    const medianSalePrice = getMedianSalePrice(row);
-    const homesSold = getHomesSold(row);
-    const periodEnd = getPeriodEnd(row);
-    const periodBegin = getPeriodBegin(row);
+    const medianDomYoy = toNumber(row.median_dom_yoy);
+    const medianSalePrice = toNumber(row.median_sale_price);
+    const homesSold = toNumber(row.homes_sold);
+    const periodEnd = clean(row.period_end);
+    const periodBegin = clean(row.period_begin);
+    const lastUpdated = clean(row.last_updated);
 
     let previousYearDaysOnMarket = null;
 
@@ -341,6 +177,7 @@ async function fetchRedfinCityData() {
       marketName: `${cityName}, OK`,
       periodBegin,
       periodEnd,
+      lastUpdated,
       medianDaysOnMarket: Math.round(medianDaysOnMarket),
       previousYearDaysOnMarket,
       medianSalePrice,
@@ -353,13 +190,13 @@ async function fetchRedfinCityData() {
 
   console.log(`Redfin rows scanned: ${scannedRows}`);
   console.log(`Oklahoma rows found: ${oklahomaRows}`);
-  console.log(`Target city matches: ${cityMatches}`);
+  console.log(`Target city rows found: ${targetCityRows}`);
   console.log(`Usable Redfin city rows: ${usableRows}`);
 
   const latestRows = pickLatestRowsByCity(matchedRows);
 
   if (!latestRows.length) {
-    throw new Error("No usable Oklahoma city-level rows found in Redfin data.");
+    throw new Error("No usable Oklahoma city-level Redfin rows found.");
   }
 
   console.log(`Found ${latestRows.length} Oklahoma city-level Redfin markets.`);
@@ -370,6 +207,7 @@ async function fetchRedfinCityData() {
     sourceName: row.sourceName,
     sourceUrl: row.sourceUrl,
     latestDate: row.periodEnd || row.periodBegin,
+    lastUpdated: row.lastUpdated,
     medianDaysOnMarket: row.medianDaysOnMarket,
     previousYearDaysOnMarket: row.previousYearDaysOnMarket,
     medianSalePrice: row.medianSalePrice,
