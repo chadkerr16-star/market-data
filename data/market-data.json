@@ -6,9 +6,9 @@
     "website": "kerrteam.com",
     "shortName": "Kerr Team"
   },
-  "dataMode": "redfin-city-level-with-fred-signals",
-  "updatedAt": "2026-05-14T05:16:26.540Z",
-  "note": "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and may not match city-level Redfin data exactly.",
+  "dataMode": "redfin-city-level-with-fred-and-zillow-signals",
+  "updatedAt": "2026-05-14T05:26:47.047Z",
+  "note": "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and Zillow Research city-level ZHVI. These sources measure different things and may not match exactly.",
   "markets": [
     {
       "marketName": "Bethany, OK",
@@ -39,6 +39,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Bethany, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 178150,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -71,6 +82,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Blanchard, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 319913,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -103,6 +125,17 @@
           "previousMonthDaysOnMarket": 59,
           "previousYearDaysOnMarket": 48,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Broken Arrow, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 286846,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -135,6 +168,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Del City, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 139300,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -167,6 +211,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Edmond, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 353954,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -199,6 +254,17 @@
           "previousMonthDaysOnMarket": 69,
           "previousYearDaysOnMarket": 56,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Enid, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 135597,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -231,6 +297,17 @@
           "previousMonthDaysOnMarket": 56,
           "previousYearDaysOnMarket": 52,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Lawton, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 139275,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -263,6 +340,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Midwest City, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 167855,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -295,6 +383,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Moore, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 222549,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -327,6 +426,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Mustang, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 277553,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -359,6 +469,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Noble, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 208255,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -391,6 +512,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Norman, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 262839,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -423,6 +555,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Oklahoma City, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 206713,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -455,6 +598,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Piedmont, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 340623,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -474,7 +628,19 @@
       "cities": [
         "Stillwater"
       ],
-      "additionalSignals": {}
+      "additionalSignals": {
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Stillwater, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 263398,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
+        }
+      }
     },
     {
       "marketName": "Tulsa, OK",
@@ -505,6 +671,17 @@
           "previousMonthDaysOnMarket": 59,
           "previousYearDaysOnMarket": 48,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Tulsa, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 217450,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -537,6 +714,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Tuttle, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 326451,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     },
@@ -569,6 +757,17 @@
           "previousMonthDaysOnMarket": 54,
           "previousYearDaysOnMarket": 43,
           "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        },
+        "zillow": {
+          "label": "Zillow Typical Home Value",
+          "sourceName": "Zillow Research",
+          "sourceUrl": "https://www.zillow.com/research/data/",
+          "geography": "Yukon, OK",
+          "regionType": "city",
+          "latestDate": "2026-03-31",
+          "latestMonthLabel": "March 2026",
+          "typicalHomeValue": 273583,
+          "note": "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
         }
       }
     }
