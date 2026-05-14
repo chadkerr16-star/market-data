@@ -6,8 +6,9 @@
     "website": "kerrteam.com",
     "shortName": "Kerr Team"
   },
-  "dataMode": "redfin-city-level",
-  "updatedAt": "2026-05-13T02:10:16.277Z",
+  "dataMode": "redfin-city-level-with-fred-signals",
+  "updatedAt": "2026-05-14T05:16:26.540Z",
+  "note": "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and may not match city-level Redfin data exactly.",
   "markets": [
     {
       "marketName": "Bethany, OK",
@@ -15,6 +16,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 21,
       "previousYearDaysOnMarket": 16,
@@ -23,7 +25,22 @@
       "speed": "Fast",
       "cities": [
         "Bethany"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Blanchard, OK",
@@ -31,6 +48,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 85,
       "previousYearDaysOnMarket": 55,
@@ -39,7 +57,22 @@
       "speed": "Slower",
       "cities": [
         "Blanchard"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Broken Arrow, OK",
@@ -47,6 +80,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 53,
       "previousYearDaysOnMarket": 43,
@@ -55,7 +89,22 @@
       "speed": "Normal",
       "cities": [
         "Broken Arrow"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR46140",
+          "geography": "Tulsa Metro",
+          "seriesId": "MEDDAYONMAR46140",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 59,
+          "previousYearDaysOnMarket": 48,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Del City, OK",
@@ -63,6 +112,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 36,
       "previousYearDaysOnMarket": 37,
@@ -71,7 +121,22 @@
       "speed": "Fast",
       "cities": [
         "Del City"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Edmond, OK",
@@ -79,6 +144,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 37,
       "previousYearDaysOnMarket": 44,
@@ -87,7 +153,22 @@
       "speed": "Fast",
       "cities": [
         "Edmond"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Enid, OK",
@@ -95,6 +176,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 69,
       "previousYearDaysOnMarket": 67,
@@ -103,7 +185,22 @@
       "speed": "Slower",
       "cities": [
         "Enid"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR21420",
+          "geography": "Enid Metro",
+          "seriesId": "MEDDAYONMAR21420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 61,
+          "previousMonthDaysOnMarket": 69,
+          "previousYearDaysOnMarket": 56,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Lawton, OK",
@@ -111,6 +208,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 94,
       "previousYearDaysOnMarket": 67,
@@ -119,7 +217,22 @@
       "speed": "Slower",
       "cities": [
         "Lawton"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR30020",
+          "geography": "Lawton Metro",
+          "seriesId": "MEDDAYONMAR30020",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 50,
+          "previousMonthDaysOnMarket": 56,
+          "previousYearDaysOnMarket": 52,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Midwest City, OK",
@@ -127,6 +240,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 48,
       "previousYearDaysOnMarket": 47,
@@ -135,7 +249,22 @@
       "speed": "Fast",
       "cities": [
         "Midwest City"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Moore, OK",
@@ -143,6 +272,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 55,
       "previousYearDaysOnMarket": 51,
@@ -151,7 +281,22 @@
       "speed": "Normal",
       "cities": [
         "Moore"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Mustang, OK",
@@ -159,6 +304,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 42,
       "previousYearDaysOnMarket": 30,
@@ -167,7 +313,22 @@
       "speed": "Fast",
       "cities": [
         "Mustang"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Noble, OK",
@@ -175,6 +336,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 36,
       "previousYearDaysOnMarket": 9,
@@ -183,7 +345,22 @@
       "speed": "Fast",
       "cities": [
         "Noble"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Norman, OK",
@@ -191,6 +368,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 38,
       "previousYearDaysOnMarket": 34,
@@ -199,7 +377,22 @@
       "speed": "Fast",
       "cities": [
         "Norman"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Oklahoma City, OK",
@@ -207,6 +400,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 58,
       "previousYearDaysOnMarket": 54,
@@ -215,7 +409,22 @@
       "speed": "Normal",
       "cities": [
         "Oklahoma City"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Piedmont, OK",
@@ -223,6 +432,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 47,
       "previousYearDaysOnMarket": 85,
@@ -231,7 +441,22 @@
       "speed": "Fast",
       "cities": [
         "Piedmont"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Stillwater, OK",
@@ -239,6 +464,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 32,
       "previousYearDaysOnMarket": 71,
@@ -247,7 +473,8 @@
       "speed": "Fast",
       "cities": [
         "Stillwater"
-      ]
+      ],
+      "additionalSignals": {}
     },
     {
       "marketName": "Tulsa, OK",
@@ -255,6 +482,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 32,
       "previousYearDaysOnMarket": 29,
@@ -263,7 +491,22 @@
       "speed": "Fast",
       "cities": [
         "Tulsa"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR46140",
+          "geography": "Tulsa Metro",
+          "seriesId": "MEDDAYONMAR46140",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 59,
+          "previousYearDaysOnMarket": 48,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Tuttle, OK",
@@ -271,6 +514,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 89,
       "previousYearDaysOnMarket": 58,
@@ -279,7 +523,22 @@
       "speed": "Slower",
       "cities": [
         "Tuttle"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     },
     {
       "marketName": "Yukon, OK",
@@ -287,6 +546,7 @@
       "sourceName": "Redfin Data Center",
       "sourceUrl": "https://www.redfin.com/news/data-center/downloads/",
       "latestDate": "2026-03-31",
+      "latestMonthLabel": "March 2026",
       "lastUpdated": "2026-04-14 14:25:48.665 Z",
       "medianDaysOnMarket": 15,
       "previousYearDaysOnMarket": 20,
@@ -295,7 +555,22 @@
       "speed": "Fast",
       "cities": [
         "Yukon"
-      ]
+      ],
+      "additionalSignals": {
+        "realtor": {
+          "label": "Listing Market Pace",
+          "sourceName": "FRED / Realtor.com Housing Inventory",
+          "sourceUrl": "https://fred.stlouisfed.org/series/MEDDAYONMAR36420",
+          "geography": "Oklahoma City Metro",
+          "seriesId": "MEDDAYONMAR36420",
+          "latestDate": "2026-04-01",
+          "latestMonthLabel": "April 2026",
+          "medianDom": 51,
+          "previousMonthDaysOnMarket": 54,
+          "previousYearDaysOnMarket": 43,
+          "note": "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        }
+      }
     }
   ]
 }
