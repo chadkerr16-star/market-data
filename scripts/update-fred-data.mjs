@@ -13,7 +13,8 @@ const BRAND_DEFAULTS = {
   name: "Your Home Sold Guaranteed Realty – Kerr Team",
   phone: "330-3000",
   textKeyword: "VALUE",
-  website: "kerrteam.com"
+  website: "kerrteam.com",
+  shortName: "Kerr Team"
 };
 
 const TARGET_CITIES = [
@@ -49,6 +50,10 @@ function normalizeHeader(value) {
     .replace(/\s+/g, "_");
 }
 
+function normalizeText(value) {
+  return stripQuotes(value).toLowerCase().trim();
+}
+
 function clean(value) {
   return stripQuotes(value);
 }
@@ -56,6 +61,7 @@ function clean(value) {
 function toNumber(value) {
   const cleaned = clean(value).replace(/[$,%]/g, "");
   if (!cleaned || cleaned.toUpperCase() === "NA") return null;
+
   const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
 }
@@ -66,9 +72,11 @@ function parseTsvLine(line) {
 
 function buildRow(headers, values) {
   const row = {};
+
   headers.forEach((header, index) => {
     row[normalizeHeader(header)] = values[index] ?? "";
   });
+
   return row;
 }
 
@@ -93,6 +101,117 @@ function pickLatestRowsByCity(rows) {
   return Array.from(latestByCity.values()).sort((a, b) =>
     a.cityName.localeCompare(b.cityName)
   );
+}
+
+function parseFredCsv(csvText, seriesId) {
+  const lines = csvText.trim().split(/\r?\n/);
+
+  if (lines.length < 2) {
+    throw new Error(`FRED returned no rows for ${seriesId}`);
+  }
+
+  const rows = lines
+    .slice(1)
+    .map((line) => {
+      const [date, value] = line.split(",");
+      return { date, value };
+    })
+    .filter((row) => row.value && row.value !== "." && !Number.isNaN(Number(row.value)));
+
+  if (!rows.length) {
+    throw new Error(`No valid values found for ${seriesId}`);
+  }
+
+  const latest = rows[rows.length - 1];
+  const previousMonth = rows.length >= 2 ? rows[rows.length - 2] : null;
+  const previousYear = rows.length >= 13 ? rows[rows.length - 13] : null;
+
+  return {
+    latestDate: latest.date,
+    medianDaysOnMarket: Math.round(Number(latest.value)),
+    previousMonthDate: previousMonth ? previousMonth.date : null,
+    previousMonthDaysOnMarket: previousMonth ? Math.round(Number(previousMonth.value)) : null,
+    previousYearDate: previousYear ? previousYear.date : null,
+    previousYearDaysOnMarket: previousYear ? Math.round(Number(previousYear.value)) : null
+  };
+}
+
+function formatMonthLabel(dateText) {
+  if (!dateText) return "";
+
+  const parts = String(dateText).split("-");
+  if (parts.length !== 3) return dateText;
+
+  const date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric"
+  });
+}
+
+async function fetchFredSeries(seriesId) {
+  const fredUrl = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(
+    seriesId
+  )}`;
+
+  const response = await fetch(fredUrl);
+
+  if (!response.ok) {
+    throw new Error(`Could not fetch ${seriesId}: ${response.status}`);
+  }
+
+  const csvText = await response.text();
+  return parseFredCsv(csvText, seriesId);
+}
+
+async function fetchFredMetroSignals(config) {
+  console.log("Fetching Realtor.com / FRED metro supporting signals...");
+
+  const signals = [];
+
+  if (!config.markets || !Array.isArray(config.markets)) {
+    console.log("No FRED config markets found.");
+    return signals;
+  }
+
+  for (const market of config.markets) {
+    if (!market.seriesId) continue;
+
+    try {
+      console.log(`Fetching FRED signal: ${market.marketName} - ${market.seriesId}`);
+
+      const parsed = await fetchFredSeries(market.seriesId);
+
+      signals.push({
+        marketName: market.marketName,
+        state: market.state || "OK",
+        cities: market.cities || [],
+        sourceName: market.sourceName || "FRED / Realtor.com Housing Inventory",
+        sourceUrl: market.sourceUrl || "https://fred.stlouisfed.org/",
+        seriesId: market.seriesId,
+        geography: market.marketName,
+        latestDate: parsed.latestDate,
+        latestMonthLabel: formatMonthLabel(parsed.latestDate),
+        medianDom: parsed.medianDaysOnMarket,
+        previousMonthDaysOnMarket: parsed.previousMonthDaysOnMarket,
+        previousYearDaysOnMarket: parsed.previousYearDaysOnMarket
+      });
+    } catch (error) {
+      console.warn(`Skipping FRED signal for ${market.marketName}: ${error.message}`);
+    }
+  }
+
+  console.log(`FRED metro signals found: ${signals.length}`);
+  return signals;
+}
+
+function findFredSignalForCity(cityName, fredSignals) {
+  const normalizedCity = normalizeText(cityName);
+
+  return fredSignals.find((signal) => {
+    return (signal.cities || []).some((city) => normalizeText(city) === normalizedCity);
+  });
 }
 
 async function fetchRedfinCityData() {
@@ -207,6 +326,7 @@ async function fetchRedfinCityData() {
     sourceName: row.sourceName,
     sourceUrl: row.sourceUrl,
     latestDate: row.periodEnd || row.periodBegin,
+    latestMonthLabel: formatMonthLabel(row.periodEnd || row.periodBegin),
     lastUpdated: row.lastUpdated,
     medianDaysOnMarket: row.medianDaysOnMarket,
     previousYearDaysOnMarket: row.previousYearDaysOnMarket,
@@ -217,69 +337,69 @@ async function fetchRedfinCityData() {
   }));
 }
 
-function parseFredCsv(csvText, seriesId) {
-  const lines = csvText.trim().split(/\r?\n/);
-
-  if (lines.length < 2) {
-    throw new Error(`FRED returned no rows for ${seriesId}`);
-  }
-
-  const rows = lines
-    .slice(1)
-    .map((line) => {
-      const [date, value] = line.split(",");
-      return { date, value };
-    })
-    .filter((row) => row.value && row.value !== "." && !Number.isNaN(Number(row.value)));
-
-  if (!rows.length) {
-    throw new Error(`No valid values found for ${seriesId}`);
-  }
-
-  const latest = rows[rows.length - 1];
-  const previousYear = rows.length >= 13 ? rows[rows.length - 13] : null;
-
-  return {
-    latestDate: latest.date,
-    medianDaysOnMarket: Math.round(Number(latest.value)),
-    previousYearDate: previousYear ? previousYear.date : null,
-    previousYearDaysOnMarket: previousYear ? Math.round(Number(previousYear.value)) : null
-  };
-}
-
-async function fetchFredFallback(config) {
+async function fetchFredFallbackMarkets(config) {
   console.log("Using FRED/Realtor.com metro fallback data...");
 
   const markets = [];
 
+  if (!config.markets || !Array.isArray(config.markets)) {
+    throw new Error("No fallback FRED markets found in data/market-config.json.");
+  }
+
   for (const market of config.markets) {
-    const fredUrl = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(
-      market.seriesId
-    )}`;
+    if (!market.seriesId) continue;
 
-    console.log(`Fetching ${market.marketName}: ${market.seriesId}`);
+    console.log(`Fetching fallback market: ${market.marketName} - ${market.seriesId}`);
 
-    const response = await fetch(fredUrl);
-
-    if (!response.ok) {
-      throw new Error(`Could not fetch ${market.seriesId}: ${response.status}`);
-    }
-
-    const csvText = await response.text();
-    const parsed = parseFredCsv(csvText, market.seriesId);
+    const parsed = await fetchFredSeries(market.seriesId);
 
     markets.push({
       marketName: market.marketName,
-      state: market.state,
+      state: market.state || "OK",
       seriesId: market.seriesId,
-      sourceName: market.sourceName || "FRED / Realtor.com",
-      sourceUrl: market.sourceUrl,
-      cities: market.cities,
-      ...parsed
+      sourceName: market.sourceName || "FRED / Realtor.com Housing Inventory",
+      sourceUrl: market.sourceUrl || "https://fred.stlouisfed.org/",
+      cities: market.cities || [],
+      latestDate: parsed.latestDate,
+      latestMonthLabel: formatMonthLabel(parsed.latestDate),
+      medianDaysOnMarket: parsed.medianDaysOnMarket,
+      previousYearDaysOnMarket: parsed.previousYearDaysOnMarket,
+      previousMonthDaysOnMarket: parsed.previousMonthDaysOnMarket,
+      speed: getSpeed(parsed.medianDaysOnMarket)
     });
   }
 
   return markets;
+}
+
+function addAdditionalSignals(markets, fredSignals) {
+  return markets.map((market) => {
+    const cityName = market.cities && market.cities[0] ? market.cities[0] : market.marketName;
+    const fredSignal = findFredSignalForCity(cityName, fredSignals);
+
+    const additionalSignals = {};
+
+    if (fredSignal) {
+      additionalSignals.realtor = {
+        label: "Listing Market Pace",
+        sourceName: fredSignal.sourceName,
+        sourceUrl: fredSignal.sourceUrl,
+        geography: fredSignal.geography,
+        seriesId: fredSignal.seriesId,
+        latestDate: fredSignal.latestDate,
+        latestMonthLabel: fredSignal.latestMonthLabel,
+        medianDom: fredSignal.medianDom,
+        previousMonthDaysOnMarket: fredSignal.previousMonthDaysOnMarket,
+        previousYearDaysOnMarket: fredSignal.previousYearDaysOnMarket,
+        note: "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+      };
+    }
+
+    return {
+      ...market,
+      additionalSignals
+    };
+  });
 }
 
 async function main() {
@@ -287,16 +407,19 @@ async function main() {
   const config = JSON.parse(configText);
 
   let markets = [];
-  let dataMode = "redfin-city-level";
+  let dataMode = "redfin-city-level-with-fred-signals";
+
+  const fredSignals = await fetchFredMetroSignals(config);
 
   try {
     markets = await fetchRedfinCityData();
+    markets = addAdditionalSignals(markets, fredSignals);
   } catch (error) {
     console.warn("Redfin city-level data was not available.");
     console.warn(error.message);
 
     dataMode = "fred-metro-fallback";
-    markets = await fetchFredFallback(config);
+    markets = await fetchFredFallbackMarkets(config);
   }
 
   const output = {
@@ -306,6 +429,8 @@ async function main() {
     },
     dataMode,
     updatedAt: new Date().toISOString(),
+    note:
+      "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and may not match city-level Redfin data exactly.",
     markets
   };
 
