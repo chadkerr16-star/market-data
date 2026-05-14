@@ -9,6 +9,11 @@ const OUTPUT_PATH = "data/market-data.json";
 const REDFIN_CITY_DATA_URL =
   "https://redfin-public-data.s3.us-west-2.amazonaws.com/redfin_market_tracker/city_market_tracker.tsv000.gz";
 
+const ZILLOW_ZHVI_CITY_URLS = [
+  "https://files.zillowstatic.com/research/public_csvs/zhvi/City_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv",
+  "https://files.zillowstatic.com/research/public_csvs/zhvi/City_zhvi_uc_sfrcondo_tier_0.33_0.67_month.csv"
+];
+
 const BRAND_DEFAULTS = {
   name: "Your Home Sold Guaranteed Realty – Kerr Team",
   phone: "330-3000",
@@ -66,8 +71,62 @@ function toNumber(value) {
   return Number.isFinite(number) ? number : null;
 }
 
+function getSpeed(days) {
+  const n = Number(days);
+  if (n <= 49) return "Fast";
+  if (n >= 50 && n <= 60) return "Normal";
+  return "Slower";
+}
+
+function formatMonthLabel(dateText) {
+  if (!dateText) return "";
+
+  const parts = String(dateText).split("-");
+  if (parts.length !== 3) return dateText;
+
+  const date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric"
+  });
+}
+
 function parseTsvLine(line) {
   return line.split("\t").map(stripQuotes);
+}
+
+function parseCsvLine(line) {
+  const values = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const next = line[i + 1];
+
+    if (char === '"' && insideQuotes && next === '"') {
+      current += '"';
+      i++;
+      continue;
+    }
+
+    if (char === '"') {
+      insideQuotes = !insideQuotes;
+      continue;
+    }
+
+    if (char === "," && !insideQuotes) {
+      values.push(current.trim());
+      current = "";
+      continue;
+    }
+
+    current += char;
+  }
+
+  values.push(current.trim());
+  return values.map(stripQuotes);
 }
 
 function buildRow(headers, values) {
@@ -78,13 +137,6 @@ function buildRow(headers, values) {
   });
 
   return row;
-}
-
-function getSpeed(days) {
-  const n = Number(days);
-  if (n <= 49) return "Fast";
-  if (n >= 50 && n <= 60) return "Normal";
-  return "Slower";
 }
 
 function pickLatestRowsByCity(rows) {
@@ -134,20 +186,6 @@ function parseFredCsv(csvText, seriesId) {
     previousYearDate: previousYear ? previousYear.date : null,
     previousYearDaysOnMarket: previousYear ? Math.round(Number(previousYear.value)) : null
   };
-}
-
-function formatMonthLabel(dateText) {
-  if (!dateText) return "";
-
-  const parts = String(dateText).split("-");
-  if (parts.length !== 3) return dateText;
-
-  const date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric"
-  });
 }
 
 async function fetchFredSeries(seriesId) {
@@ -212,6 +250,108 @@ function findFredSignalForCity(cityName, fredSignals) {
   return fredSignals.find((signal) => {
     return (signal.cities || []).some((city) => normalizeText(city) === normalizedCity);
   });
+}
+
+function findLatestZillowValue(row, headers) {
+  const dateColumns = headers
+    .map((header) => clean(header))
+    .filter((header) => /^\d{4}-\d{2}-\d{2}$/.test(header))
+    .sort();
+
+  for (let i = dateColumns.length - 1; i >= 0; i--) {
+    const dateColumn = dateColumns[i];
+    const value = toNumber(row[normalizeHeader(dateColumn)]);
+
+    if (value !== null) {
+      return {
+        date: dateColumn,
+        value: Math.round(value)
+      };
+    }
+  }
+
+  return null;
+}
+
+async function fetchZillowCitySignals() {
+  console.log("Fetching Zillow Research city ZHVI supporting signals...");
+
+  for (const url of ZILLOW_ZHVI_CITY_URLS) {
+    try {
+      const cacheBustedUrl = `${url}?t=${Date.now()}`;
+      console.log(`Trying Zillow URL: ${url}`);
+
+      const response = await fetch(cacheBustedUrl);
+
+      if (!response.ok) {
+        throw new Error(`Zillow returned ${response.status}`);
+      }
+
+      const csvText = await response.text();
+      const lines = csvText.trim().split(/\r?\n/);
+
+      if (lines.length < 2) {
+        throw new Error("Zillow CSV did not contain rows.");
+      }
+
+      const headers = parseCsvLine(lines[0]);
+      const signals = [];
+
+      for (const line of lines.slice(1)) {
+        if (!line.trim()) continue;
+
+        const values = parseCsvLine(line);
+        const row = buildRow(headers, values);
+
+        const cityName = clean(row.regionname);
+        const stateName = clean(row.statename || row.state);
+        const regionType = clean(row.regiontype);
+
+        if (!TARGET_CITIES.includes(cityName)) continue;
+
+        const isOklahoma =
+          normalizeText(stateName) === "ok" ||
+          normalizeText(stateName) === "oklahoma";
+
+        if (!isOklahoma) continue;
+
+        if (regionType && normalizeText(regionType) !== "city") continue;
+
+        const latest = findLatestZillowValue(row, headers);
+
+        if (!latest) continue;
+
+        signals.push({
+          cityName,
+          state: "OK",
+          sourceName: "Zillow Research",
+          sourceUrl: "https://www.zillow.com/research/data/",
+          label: "Zillow Typical Home Value",
+          geography: `${cityName}, OK`,
+          regionType: regionType || "City",
+          latestDate: latest.date,
+          latestMonthLabel: formatMonthLabel(latest.date),
+          typicalHomeValue: latest.value,
+          note:
+            "Zillow ZHVI is a typical home value estimate for the middle of the market. It is not the same as median sale price."
+        });
+      }
+
+      console.log(`Zillow city signals found: ${signals.length}`);
+      return signals;
+    } catch (error) {
+      console.warn(`Zillow URL failed: ${error.message}`);
+    }
+  }
+
+  console.warn("No Zillow city signals were added.");
+  return [];
+}
+
+function findZillowSignalForCity(cityName, zillowSignals) {
+  const normalizedCity = normalizeText(cityName);
+
+  return zillowSignals.find((signal) => normalizeText(signal.cityName) === normalizedCity);
 }
 
 async function fetchRedfinCityData() {
@@ -372,10 +512,11 @@ async function fetchFredFallbackMarkets(config) {
   return markets;
 }
 
-function addAdditionalSignals(markets, fredSignals) {
+function addAdditionalSignals(markets, fredSignals, zillowSignals) {
   return markets.map((market) => {
     const cityName = market.cities && market.cities[0] ? market.cities[0] : market.marketName;
     const fredSignal = findFredSignalForCity(cityName, fredSignals);
+    const zillowSignal = findZillowSignalForCity(cityName, zillowSignals);
 
     const additionalSignals = {};
 
@@ -391,7 +532,22 @@ function addAdditionalSignals(markets, fredSignals) {
         medianDom: fredSignal.medianDom,
         previousMonthDaysOnMarket: fredSignal.previousMonthDaysOnMarket,
         previousYearDaysOnMarket: fredSignal.previousYearDaysOnMarket,
-        note: "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+        note:
+          "Metro-level Realtor.com/FRED listing pace signal. This may differ from Redfin city-level sold-market days on market."
+      };
+    }
+
+    if (zillowSignal) {
+      additionalSignals.zillow = {
+        label: zillowSignal.label,
+        sourceName: zillowSignal.sourceName,
+        sourceUrl: zillowSignal.sourceUrl,
+        geography: zillowSignal.geography,
+        regionType: zillowSignal.regionType,
+        latestDate: zillowSignal.latestDate,
+        latestMonthLabel: zillowSignal.latestMonthLabel,
+        typicalHomeValue: zillowSignal.typicalHomeValue,
+        note: zillowSignal.note
       };
     }
 
@@ -407,19 +563,21 @@ async function main() {
   const config = JSON.parse(configText);
 
   let markets = [];
-  let dataMode = "redfin-city-level-with-fred-signals";
+  let dataMode = "redfin-city-level-with-fred-and-zillow-signals";
 
   const fredSignals = await fetchFredMetroSignals(config);
+  const zillowSignals = await fetchZillowCitySignals();
 
   try {
     markets = await fetchRedfinCityData();
-    markets = addAdditionalSignals(markets, fredSignals);
+    markets = addAdditionalSignals(markets, fredSignals, zillowSignals);
   } catch (error) {
     console.warn("Redfin city-level data was not available.");
     console.warn(error.message);
 
     dataMode = "fred-metro-fallback";
     markets = await fetchFredFallbackMarkets(config);
+    markets = addAdditionalSignals(markets, fredSignals, zillowSignals);
   }
 
   const output = {
@@ -430,7 +588,7 @@ async function main() {
     dataMode,
     updatedAt: new Date().toISOString(),
     note:
-      "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and may not match city-level Redfin data exactly.",
+      "Primary market speed uses Redfin city-level median days on market when available. Additional market signals may use Realtor.com/FRED metro-level data and Zillow Research city-level ZHVI. These sources measure different things and may not match exactly.",
     markets
   };
 
