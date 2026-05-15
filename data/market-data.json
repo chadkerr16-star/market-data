@@ -6,14 +6,14 @@
     "website": "kerrteam.com",
     "shortName": "Kerr Team"
   },
-  "dataMode": "mlsok-showingtime-city-dom-price-sales",
-  "updatedAt": "2026-05-15T22:05:09.430Z",
+  "dataMode": "mlsok-showingtime-city-dom-price-sales-price-ranges",
+  "updatedAt": "2026-05-15T22:36:26.709Z",
   "markets": [
     {
       "marketName": "Edmond, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FW-ZH",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -24,6 +24,44 @@
       "homesSold": 323,
       "previousYearHomesSold": 330,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 12,
+          "previousYearDaysOnMarket": 13,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 24,
+          "previousYearDaysOnMarket": 30,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 42,
+          "previousYearDaysOnMarket": 11,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 14,
+          "previousYearDaysOnMarket": 25,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Edmond"
       ]
@@ -32,7 +70,7 @@
       "marketName": "Moore, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FW-ZH",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -43,6 +81,44 @@
       "homesSold": 89,
       "previousYearHomesSold": 86,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 17,
+          "previousYearDaysOnMarket": 21,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 53,
+          "previousYearDaysOnMarket": 56,
+          "speed": "Normal",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 64,
+          "previousYearDaysOnMarket": 39,
+          "speed": "Slower",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 6,
+          "previousYearDaysOnMarket": 84,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Moore"
       ]
@@ -51,7 +127,7 @@
       "marketName": "Mustang, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FW-ZH",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -62,6 +138,44 @@
       "homesSold": 74,
       "previousYearHomesSold": 40,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 21,
+          "previousYearDaysOnMarket": 35,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 92,
+          "previousYearDaysOnMarket": 50,
+          "speed": "Slower",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 47,
+          "previousYearDaysOnMarket": 15,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 97,
+          "previousYearDaysOnMarket": 47,
+          "speed": "Slower",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Mustang"
       ]
@@ -70,7 +184,7 @@
       "marketName": "Norman, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FW-ZH",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -81,6 +195,44 @@
       "homesSold": 162,
       "previousYearHomesSold": 166,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 20,
+          "previousYearDaysOnMarket": 15,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 35,
+          "previousYearDaysOnMarket": 39,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 81,
+          "previousYearDaysOnMarket": 19,
+          "speed": "Slower",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 45,
+          "previousYearDaysOnMarket": 58,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Norman"
       ]
@@ -89,7 +241,7 @@
       "marketName": "Oklahoma City, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fp-muw",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -100,6 +252,44 @@
       "homesSold": 590,
       "previousYearHomesSold": 571,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 24,
+          "previousYearDaysOnMarket": 19,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 23,
+          "previousYearDaysOnMarket": 18,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 29,
+          "previousYearDaysOnMarket": 28,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 20,
+          "previousYearDaysOnMarket": 26,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Oklahoma City"
       ]
@@ -108,7 +298,7 @@
       "marketName": "Yukon, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fp-muw",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -119,6 +309,44 @@
       "homesSold": 167,
       "previousYearHomesSold": 169,
       "speed": "Fast",
+      "priceRanges": [
+        {
+          "key": "200-299",
+          "label": "$200k–$299k",
+          "medianDaysOnMarket": 39,
+          "previousYearDaysOnMarket": 30,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "300-399",
+          "label": "$300k–$399k",
+          "medianDaysOnMarket": 29,
+          "previousYearDaysOnMarket": 25,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "400-499",
+          "label": "$400k–$499k",
+          "medianDaysOnMarket": 56,
+          "previousYearDaysOnMarket": 38,
+          "speed": "Normal",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        },
+        {
+          "key": "500-plus",
+          "label": "$500k+",
+          "medianDaysOnMarket": 23,
+          "previousYearDaysOnMarket": 127,
+          "speed": "Fast",
+          "latestDate": "2026-04-01",
+          "latestDateLabel": "April 2026"
+        }
+      ],
       "cities": [
         "Yukon"
       ]
