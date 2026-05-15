@@ -40,6 +40,16 @@ const MLSOK_REPORTS = [
     metric: "medianSalePrice",
     name: "MLSOK Median Sales Price Batch 2",
     url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6PM-lTC.csv"
+  },
+  {
+    metric: "homesSold",
+    name: "MLSOK Closed Sales Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O.csv"
+  },
+  {
+    metric: "homesSold",
+    name: "MLSOK Closed Sales Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M.csv"
   }
 ];
 
@@ -273,6 +283,12 @@ async function fetchMlsokData() {
         row.previousYearMedianSalePrice =
           item.previousYearValue !== null ? Math.round(item.previousYearValue) : null;
       }
+
+      if (item.metric === "homesSold") {
+        row.homesSold = Math.round(item.currentValue);
+        row.previousYearHomesSold =
+          item.previousYearValue !== null ? Math.round(item.previousYearValue) : null;
+      }
     });
   }
 
@@ -306,7 +322,7 @@ async function main() {
       ...BRAND_DEFAULTS,
       ...(config.brand || {})
     },
-    dataMode: "mlsok-showingtime-city-dom-price",
+    dataMode: "mlsok-showingtime-city-dom-price-sales",
     updatedAt: new Date().toISOString(),
     markets
   };
@@ -314,7 +330,7 @@ async function main() {
   await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, 2), "utf8");
 
   console.log(`Wrote ${OUTPUT_PATH}`);
-  console.log("Data mode: mlsok-showingtime-city-dom-price");
+  console.log("Data mode: mlsok-showingtime-city-dom-price-sales");
   console.log(`Markets written: ${markets.length}`);
 }
 
