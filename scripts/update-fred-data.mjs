@@ -11,17 +11,6 @@ const BRAND_DEFAULTS = {
   shortName: "Kerr Team"
 };
 
-const MLSOK_DOM_LINKS = [
-  {
-    name: "MLSOK DOM Batch 1",
-    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6QC-ffg.csv"
-  },
-  {
-    name: "MLSOK DOM Batch 2",
-    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Q2-uWp.csv"
-  }
-];
-
 const FEATURED_CITIES = [
   "Edmond",
   "Moore",
@@ -29,6 +18,29 @@ const FEATURED_CITIES = [
   "Norman",
   "Oklahoma City",
   "Yukon"
+];
+
+const MLSOK_REPORTS = [
+  {
+    metric: "medianDaysOnMarket",
+    name: "MLSOK DOM Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6QC-ffg.csv"
+  },
+  {
+    metric: "medianDaysOnMarket",
+    name: "MLSOK DOM Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Q2-uWp.csv"
+  },
+  {
+    metric: "medianSalePrice",
+    name: "MLSOK Median Sales Price Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj.csv"
+  },
+  {
+    metric: "medianSalePrice",
+    name: "MLSOK Median Sales Price Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6PM-lTC.csv"
+  }
 ];
 
 function clean(value) {
@@ -138,92 +150,138 @@ async function fetchCsv(url) {
   return response.text();
 }
 
-async function fetchMlsokDomData() {
-  console.log("Fetching MLSOK / ShowingTime median days on market data...");
+async function readShowingTimeReport(report) {
+  console.log(`Fetching ${report.name}: ${report.url}`);
+
+  const csvText = await fetchCsv(report.url);
+
+  const lines = csvText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const dataFromLine = lines.find((line) =>
+    line.toLowerCase().startsWith("data from:")
+  );
+
+  const dataFrom = dataFromLine ? parseCsvLine(dataFromLine)[1] : "";
+
+  const headerIndex = findDateHeaderIndex(lines);
+
+  if (headerIndex === -1) {
+    throw new Error(`Could not find Date header in ${report.name}`);
+  }
+
+  const headers = parseCsvLine(lines[headerIndex]).filter(Boolean);
+  const cities = headers.slice(1);
+
+  console.log(`Cities found in ${report.name}: ${cities.join(", ")}`);
+
+  const dataLines = lines.slice(headerIndex + 1);
+
+  const parsedRows = dataLines
+    .map((line) => parseCsvLine(line))
+    .filter((row) => row.length >= 2 && clean(row[0]));
+
+  if (!parsedRows.length) {
+    throw new Error(`No monthly data rows found in ${report.name}`);
+  }
+
+  const latestRow = parsedRows[parsedRows.length - 1];
+  const latestDate = parseMonthYear(latestRow[0]);
+
+  const previousYearRow = parsedRows.find((row) => {
+    const parsedDate = parseMonthYear(row[0]);
+    return (
+      parsedDate.month === latestDate.month &&
+      String(Number(parsedDate.year) + 1) === latestDate.year
+    );
+  });
+
+  const values = [];
+
+  cities.forEach((city, index) => {
+    if (!FEATURED_CITIES.includes(city)) return;
+
+    const currentValue = toNumber(latestRow[index + 1]);
+    const previousYearValue = previousYearRow
+      ? toNumber(previousYearRow[index + 1])
+      : null;
+
+    if (currentValue === null) return;
+
+    values.push({
+      city,
+      metric: report.metric,
+      currentValue,
+      previousYearValue,
+      latestDate,
+      dataFrom,
+      sourceUrl: report.url.replace(/\.csv$/i, "")
+    });
+  });
+
+  return values;
+}
+
+async function fetchMlsokData() {
+  console.log("Fetching MLSOK / ShowingTime market data...");
 
   const cityRows = new Map();
 
-  for (const link of MLSOK_DOM_LINKS) {
-    console.log(`Fetching ${link.name}: ${link.url}`);
-
-    const csvText = await fetchCsv(link.url);
-    const lines = csvText
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
-
-    const dataFromLine = lines.find((line) =>
-      line.toLowerCase().startsWith("data from:")
-    );
-
-    const dataFrom = dataFromLine ? parseCsvLine(dataFromLine)[1] : "";
-
-    const headerIndex = findDateHeaderIndex(lines);
-
-    if (headerIndex === -1) {
-      throw new Error(`Could not find Date header in ${link.name}`);
-    }
-
-    const headers = parseCsvLine(lines[headerIndex]).filter(Boolean);
-    const cities = headers.slice(1);
-
-    console.log(`Cities found in ${link.name}: ${cities.join(", ")}`);
-
-    const dataLines = lines.slice(headerIndex + 1);
-
-    const parsedRows = dataLines
-      .map((line) => parseCsvLine(line))
-      .filter((row) => row.length >= 2 && clean(row[0]));
-
-    if (!parsedRows.length) {
-      throw new Error(`No monthly data rows found in ${link.name}`);
-    }
-
-    const latestRow = parsedRows[parsedRows.length - 1];
-    const latestDate = parseMonthYear(latestRow[0]);
-
-    const previousYearRow = parsedRows.find((row) => {
-      const parsedDate = parseMonthYear(row[0]);
-      return (
-        parsedDate.month === latestDate.month &&
-        String(Number(parsedDate.year) + 1) === latestDate.year
-      );
+  FEATURED_CITIES.forEach((city) => {
+    cityRows.set(city, {
+      marketName: `${city}, OK`,
+      state: "OK",
+      sourceName: "MLSOK / ShowingTime",
+      sourceUrl: "",
+      latestDate: "",
+      latestDateLabel: "",
+      dataFrom: "",
+      medianDaysOnMarket: null,
+      previousYearDaysOnMarket: null,
+      medianSalePrice: null,
+      previousYearMedianSalePrice: null,
+      homesSold: null,
+      previousYearHomesSold: null,
+      speed: "Normal",
+      cities: [city]
     });
+  });
 
-    cities.forEach((city, index) => {
-      const currentValue = toNumber(latestRow[index + 1]);
-      const previousYearValue = previousYearRow
-        ? toNumber(previousYearRow[index + 1])
-        : null;
+  for (const report of MLSOK_REPORTS) {
+    const values = await readShowingTimeReport(report);
 
-      if (!FEATURED_CITIES.includes(city)) return;
-      if (currentValue === null) return;
+    values.forEach((item) => {
+      const row = cityRows.get(item.city);
+      if (!row) return;
 
-      cityRows.set(city, {
-        marketName: `${city}, OK`,
-        state: "OK",
-        sourceName: "MLSOK / ShowingTime",
-        sourceUrl: link.url.replace(/\.csv$/i, ""),
-        latestDate: latestDate.isoDate,
-        latestDateLabel: latestDate.label,
-        dataFrom,
-        medianDaysOnMarket: Math.round(currentValue),
-        previousYearDaysOnMarket:
-          previousYearValue !== null ? Math.round(previousYearValue) : null,
-        medianSalePrice: null,
-        homesSold: null,
-        speed: getSpeed(currentValue),
-        cities: [city]
-      });
+      row.sourceUrl = item.sourceUrl;
+      row.latestDate = item.latestDate.isoDate;
+      row.latestDateLabel = item.latestDate.label;
+      row.dataFrom = item.dataFrom;
+
+      if (item.metric === "medianDaysOnMarket") {
+        row.medianDaysOnMarket = Math.round(item.currentValue);
+        row.previousYearDaysOnMarket =
+          item.previousYearValue !== null ? Math.round(item.previousYearValue) : null;
+        row.speed = getSpeed(item.currentValue);
+      }
+
+      if (item.metric === "medianSalePrice") {
+        row.medianSalePrice = Math.round(item.currentValue);
+        row.previousYearMedianSalePrice =
+          item.previousYearValue !== null ? Math.round(item.previousYearValue) : null;
+      }
     });
   }
 
-  const markets = Array.from(cityRows.values()).sort((a, b) =>
-    a.marketName.localeCompare(b.marketName)
-  );
+  const markets = Array.from(cityRows.values())
+    .filter((row) => row.medianDaysOnMarket !== null)
+    .sort((a, b) => a.marketName.localeCompare(b.marketName));
 
   if (!markets.length) {
-    throw new Error("No MLSOK city DOM data was found.");
+    throw new Error("No MLSOK market data was found.");
   }
 
   console.log(`MLSOK markets found: ${markets.length}`);
@@ -241,14 +299,14 @@ async function main() {
     console.warn("No market-config.json found. Using default brand settings.");
   }
 
-  const markets = await fetchMlsokDomData();
+  const markets = await fetchMlsokData();
 
   const output = {
     brand: {
       ...BRAND_DEFAULTS,
       ...(config.brand || {})
     },
-    dataMode: "mlsok-showingtime-city-dom",
+    dataMode: "mlsok-showingtime-city-dom-price",
     updatedAt: new Date().toISOString(),
     markets
   };
@@ -256,7 +314,7 @@ async function main() {
   await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, 2), "utf8");
 
   console.log(`Wrote ${OUTPUT_PATH}`);
-  console.log("Data mode: mlsok-showingtime-city-dom");
+  console.log("Data mode: mlsok-showingtime-city-dom-price");
   console.log(`Markets written: ${markets.length}`);
 }
 
