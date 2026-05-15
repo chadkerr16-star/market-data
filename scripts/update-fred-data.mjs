@@ -50,6 +50,63 @@ const MLSOK_REPORTS = [
     metric: "homesSold",
     name: "MLSOK Closed Sales Batch 2",
     url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M.csv"
+  },
+
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "200-299",
+    priceRangeLabel: "$200k–$299k",
+    name: "MLSOK DOM $200k-$299k Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fd-8LO.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "200-299",
+    priceRangeLabel: "$200k–$299k",
+    name: "MLSOK DOM $200k-$299k Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FT-Y4u.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "300-399",
+    priceRangeLabel: "$300k–$399k",
+    name: "MLSOK DOM $300k-$399k Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fw-KkT.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "300-399",
+    priceRangeLabel: "$300k–$399k",
+    name: "MLSOK DOM $300k-$399k Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fq-68J.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "400-499",
+    priceRangeLabel: "$400k–$499k",
+    name: "MLSOK DOM $400k-$499k Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6F3-9gm.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "400-499",
+    priceRangeLabel: "$400k–$499k",
+    name: "MLSOK DOM $400k-$499k Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6F1-VLQ.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "500-plus",
+    priceRangeLabel: "$500k+",
+    name: "MLSOK DOM $500k+ Batch 1",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6FW-ZH.csv"
+  },
+  {
+    metric: "priceRangeDom",
+    priceRangeKey: "500-plus",
+    priceRangeLabel: "$500k+",
+    name: "MLSOK DOM $500k+ Batch 2",
+    url: "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fp-muw.csv"
   }
 ];
 
@@ -150,6 +207,19 @@ function findDateHeaderIndex(lines) {
   });
 }
 
+function findSegments(lines) {
+  const segmentsLine = lines.find((line) =>
+    line.toLowerCase().startsWith("segments:")
+  );
+
+  if (!segmentsLine) return [];
+
+  return parseCsvLine(segmentsLine)
+    .slice(1)
+    .map(clean)
+    .filter(Boolean);
+}
+
 async function fetchCsv(url) {
   const response = await fetch(url, { cache: "no-store" });
 
@@ -182,8 +252,12 @@ async function readShowingTimeReport(report) {
     throw new Error(`Could not find Date header in ${report.name}`);
   }
 
-  const headers = parseCsvLine(lines[headerIndex]).filter(Boolean);
-  const cities = headers.slice(1);
+  let cities = findSegments(lines);
+
+  if (!cities.length) {
+    const headers = parseCsvLine(lines[headerIndex]).filter(Boolean);
+    cities = headers.slice(1);
+  }
 
   console.log(`Cities found in ${report.name}: ${cities.join(", ")}`);
 
@@ -223,6 +297,8 @@ async function readShowingTimeReport(report) {
     values.push({
       city,
       metric: report.metric,
+      priceRangeKey: report.priceRangeKey || "",
+      priceRangeLabel: report.priceRangeLabel || "",
       currentValue,
       previousYearValue,
       latestDate,
@@ -255,6 +331,7 @@ async function fetchMlsokData() {
       homesSold: null,
       previousYearHomesSold: null,
       speed: "Normal",
+      priceRanges: [],
       cities: [city]
     });
   });
@@ -289,11 +366,33 @@ async function fetchMlsokData() {
         row.previousYearHomesSold =
           item.previousYearValue !== null ? Math.round(item.previousYearValue) : null;
       }
+
+      if (item.metric === "priceRangeDom") {
+        row.priceRanges.push({
+          key: item.priceRangeKey,
+          label: item.priceRangeLabel,
+          medianDaysOnMarket: Math.round(item.currentValue),
+          previousYearDaysOnMarket:
+            item.previousYearValue !== null ? Math.round(item.previousYearValue) : null,
+          speed: getSpeed(item.currentValue),
+          latestDate: item.latestDate.isoDate,
+          latestDateLabel: item.latestDate.label
+        });
+      }
     });
   }
 
+  const priceRangeOrder = ["200-299", "300-399", "400-499", "500-plus"];
+
   const markets = Array.from(cityRows.values())
     .filter((row) => row.medianDaysOnMarket !== null)
+    .map((row) => {
+      row.priceRanges.sort((a, b) => {
+        return priceRangeOrder.indexOf(a.key) - priceRangeOrder.indexOf(b.key);
+      });
+
+      return row;
+    })
     .sort((a, b) => a.marketName.localeCompare(b.marketName));
 
   if (!markets.length) {
@@ -322,7 +421,7 @@ async function main() {
       ...BRAND_DEFAULTS,
       ...(config.brand || {})
     },
-    dataMode: "mlsok-showingtime-city-dom-price-sales",
+    dataMode: "mlsok-showingtime-city-dom-price-sales-price-ranges",
     updatedAt: new Date().toISOString(),
     markets
   };
@@ -330,7 +429,7 @@ async function main() {
   await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, 2), "utf8");
 
   console.log(`Wrote ${OUTPUT_PATH}`);
-  console.log("Data mode: mlsok-showingtime-city-dom-price-sales");
+  console.log("Data mode: mlsok-showingtime-city-dom-price-sales-price-ranges");
   console.log(`Markets written: ${markets.length}`);
 }
 
