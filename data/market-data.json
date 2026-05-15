@@ -6,14 +6,14 @@
     "website": "kerrteam.com",
     "shortName": "Kerr Team"
   },
-  "dataMode": "mlsok-showingtime-city-dom-price",
-  "updatedAt": "2026-05-15T21:55:03.233Z",
+  "dataMode": "mlsok-showingtime-city-dom-price-sales",
+  "updatedAt": "2026-05-15T22:05:09.430Z",
   "markets": [
     {
       "marketName": "Edmond, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -21,8 +21,8 @@
       "previousYearDaysOnMarket": 23,
       "medianSalePrice": 355000,
       "previousYearMedianSalePrice": 365000,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 323,
+      "previousYearHomesSold": 330,
       "speed": "Fast",
       "cities": [
         "Edmond"
@@ -32,7 +32,7 @@
       "marketName": "Moore, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -40,8 +40,8 @@
       "previousYearDaysOnMarket": 29,
       "medianSalePrice": 242500,
       "previousYearMedianSalePrice": 243500,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 89,
+      "previousYearHomesSold": 86,
       "speed": "Fast",
       "cities": [
         "Moore"
@@ -51,7 +51,7 @@
       "marketName": "Mustang, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -59,8 +59,8 @@
       "previousYearDaysOnMarket": 35,
       "medianSalePrice": 251075,
       "previousYearMedianSalePrice": 278995,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 74,
+      "previousYearHomesSold": 40,
       "speed": "Fast",
       "cities": [
         "Mustang"
@@ -70,7 +70,7 @@
       "marketName": "Norman, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -78,8 +78,8 @@
       "previousYearDaysOnMarket": 20,
       "medianSalePrice": 284950,
       "previousYearMedianSalePrice": 301995,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 162,
+      "previousYearHomesSold": 166,
       "speed": "Fast",
       "cities": [
         "Norman"
@@ -89,7 +89,7 @@
       "marketName": "Oklahoma City, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6PM-lTC",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -97,8 +97,8 @@
       "previousYearDaysOnMarket": 17,
       "medianSalePrice": 240000,
       "previousYearMedianSalePrice": 239990,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 590,
+      "previousYearHomesSold": 571,
       "speed": "Fast",
       "cities": [
         "Oklahoma City"
@@ -108,7 +108,7 @@
       "marketName": "Yukon, OK",
       "state": "OK",
       "sourceName": "MLSOK / ShowingTime",
-      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6PM-lTC",
+      "sourceUrl": "https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M",
       "latestDate": "2026-04-01",
       "latestDateLabel": "April 2026",
       "dataFrom": "5/15/2026",
@@ -116,8 +116,8 @@
       "previousYearDaysOnMarket": 26,
       "medianSalePrice": 283000,
       "previousYearMedianSalePrice": 277000,
-      "homesSold": null,
-      "previousYearHomesSold": null,
+      "homesSold": 167,
+      "previousYearHomesSold": 169,
       "speed": "Fast",
       "cities": [
         "Yukon"
