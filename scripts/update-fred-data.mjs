@@ -12,7 +12,42 @@ const DEFAULT_BRAND = {
   website: 'kerrteam.com'
 };
 
-const FEATURED_CITIES = ['Edmond', 'Moore', 'Mustang', 'Norman', 'Oklahoma City', 'Yukon'];
+const FULL_MLSOK_CITIES = ['Edmond', 'Moore', 'Mustang', 'Norman', 'Oklahoma City', 'Yukon'];
+
+const BASIC_PUBLIC_MARKETS = [
+  {
+    marketName: 'Oklahoma City Metro',
+    state: 'OK',
+    seriesId: 'MEDDAYONMAR36420',
+    sourceName: 'FRED / Realtor.com Housing Inventory',
+    sourceUrl: 'https://fred.stlouisfed.org/series/MEDDAYONMAR36420',
+    cities: ['Oklahoma City', 'Norman', 'Edmond', 'Moore', 'Noble', 'Tuttle', 'Yukon', 'Mustang', 'Newcastle', 'Piedmont', 'Choctaw', 'Midwest City', 'Del City', 'Bethany', 'The Village', 'Nichols Hills', 'Blanchard', 'Harrah', 'Jones']
+  },
+  {
+    marketName: 'Tulsa Metro',
+    state: 'OK',
+    seriesId: 'MEDDAYONMAR46140',
+    sourceName: 'FRED / Realtor.com Housing Inventory',
+    sourceUrl: 'https://fred.stlouisfed.org/series/MEDDAYONMAR46140',
+    cities: ['Tulsa', 'Broken Arrow', 'Bixby', 'Jenks', 'Owasso', 'Sand Springs', 'Sapulpa', 'Claremore', 'Glenpool', 'Collinsville']
+  },
+  {
+    marketName: 'Lawton Metro',
+    state: 'OK',
+    seriesId: 'MEDDAYONMAR30020',
+    sourceName: 'FRED / Realtor.com Housing Inventory',
+    sourceUrl: 'https://fred.stlouisfed.org/series/MEDDAYONMAR30020',
+    cities: ['Lawton', 'Cache', 'Elgin', 'Fletcher', 'Medicine Park', 'Geronimo']
+  },
+  {
+    marketName: 'Enid Metro',
+    state: 'OK',
+    seriesId: 'MEDDAYONMAR21420',
+    sourceName: 'FRED / Realtor.com Housing Inventory',
+    sourceUrl: 'https://fred.stlouisfed.org/series/MEDDAYONMAR21420',
+    cities: ['Enid', 'North Enid', 'Waukomis', 'Garber', 'Hennessey']
+  }
+];
 
 const PRICE_RANGES = [
   { key: '200-299', label: '$200k–$299k' },
@@ -21,8 +56,7 @@ const PRICE_RANGES = [
   { key: '500-plus', label: '$500k+' }
 ];
 
-const REPORTS = [
-  // Citywide core metrics
+const MLSOK_REPORTS = [
   { type: 'citywide', metric: 'dom', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6QC-ffg.csv' },
   { type: 'citywide', metric: 'dom', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Q2-uWp.csv' },
   { type: 'citywide', metric: 'medianSalePrice', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6P3-fNj.csv' },
@@ -30,7 +64,6 @@ const REPORTS = [
   { type: 'citywide', metric: 'homesSold', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Yu-u0O.csv' },
   { type: 'citywide', metric: 'homesSold', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6YX-s3M.csv' },
 
-  // Price-range Median Days on Market
   { type: 'priceRange', metric: 'dom', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/N6Fd-8LO.csv' },
   { type: 'priceRange', metric: 'dom', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoY1-sg9.csv' },
   { type: 'priceRange', metric: 'dom', priceRangeKey: '300-399', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHQ-Cnz.csv' },
@@ -40,7 +73,6 @@ const REPORTS = [
   { type: 'priceRange', metric: 'dom', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHY-WbN.csv' },
   { type: 'priceRange', metric: 'dom', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHH-V61.csv' },
 
-  // Price-range Homes for Sale
   { type: 'priceRange', metric: 'homesForSale', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHO-b30.csv' },
   { type: 'priceRange', metric: 'homesForSale', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHy-rv1.csv' },
   { type: 'priceRange', metric: 'homesForSale', priceRangeKey: '300-399', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHD-yqn.csv' },
@@ -50,7 +82,6 @@ const REPORTS = [
   { type: 'priceRange', metric: 'homesForSale', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHU-4IT.csv' },
   { type: 'priceRange', metric: 'homesForSale', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHW-vIu.csv' },
 
-  // Price-range Pending Sales
   { type: 'priceRange', metric: 'pendingSales', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHI-zcw.csv' },
   { type: 'priceRange', metric: 'pendingSales', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoHe-iyf.csv' },
   { type: 'priceRange', metric: 'pendingSales', priceRangeKey: '300-399', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoH0-SJ7.csv' },
@@ -60,7 +91,6 @@ const REPORTS = [
   { type: 'priceRange', metric: 'pendingSales', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFQ-t4Q.csv' },
   { type: 'priceRange', metric: 'pendingSales', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFb-LaJ.csv' },
 
-  // Price-range Closed Sales
   { type: 'priceRange', metric: 'closedSales', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFH-tos.csv' },
   { type: 'priceRange', metric: 'closedSales', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFO-8Es.csv' },
   { type: 'priceRange', metric: 'closedSales', priceRangeKey: '300-399', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFy-Vgn.csv' },
@@ -70,7 +100,6 @@ const REPORTS = [
   { type: 'priceRange', metric: 'closedSales', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoFk-MYX.csv' },
   { type: 'priceRange', metric: 'closedSales', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoF9-sLr.csv' },
 
-  // Price-range Months Supply
   { type: 'priceRange', metric: 'monthsSupply', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoE3-773.csv' },
   { type: 'priceRange', metric: 'monthsSupply', priceRangeKey: '200-299', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoEl-8Nd.csv' },
   { type: 'priceRange', metric: 'monthsSupply', priceRangeKey: '300-399', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoEf-mI1.csv' },
@@ -80,6 +109,49 @@ const REPORTS = [
   { type: 'priceRange', metric: 'monthsSupply', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoEs-1vu.csv' },
   { type: 'priceRange', metric: 'monthsSupply', priceRangeKey: '500-plus', url: 'https://mlsok.stats.showingtime.com/infoserv/s-v1/NoEz-49t.csv' }
 ];
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function seoForCity(city) {
+  return {
+    pageTitle: `How Long Does It Take to Sell a Home in ${city}, OK?`,
+    seoTitle: `${city} OK Average Days to Sell a Home`,
+    seoDescription: `See how long homes are taking to sell in ${city}, Oklahoma, including days on market, market speed, competition, and available price-range data when available.`,
+    futureUrl: `/days-to-sell/${slugify(city)}`
+  };
+}
+
+function parseFredCsv(csv) {
+  const lines = csv.trim().split(/\r?\n/).filter(Boolean);
+
+  return lines.slice(1).map(line => {
+    const [date, value] = line.split(',');
+    return { date, value: value === '.' ? null : Number(value) };
+  }).filter(row => row.value !== null && Number.isFinite(row.value));
+}
+
+function monthLabel(dateString) {
+  const date = new Date(`${dateString}T00:00:00Z`);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(date);
+}
+
+function getSpeed(days) {
+  const n = Number(days);
+  if (!Number.isFinite(n)) return 'Unknown';
+  if (n <= 49) return 'Fast';
+  if (n >= 50 && n <= 60) return 'Normal';
+  return 'Slower';
+}
 
 function parseCsvLine(line) {
   const values = [];
@@ -109,8 +181,10 @@ function parseCsvLine(line) {
 
 function parseNumber(value) {
   if (value === null || value === undefined) return null;
+
   const cleaned = String(value).replace(/[$,%]/g, '').trim();
   if (!cleaned) return null;
+
   const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
 }
@@ -145,14 +219,6 @@ function monthToDate(label) {
   };
 }
 
-function getSpeed(days) {
-  const n = Number(days);
-  if (!Number.isFinite(n)) return 'Unknown';
-  if (n <= 49) return 'Fast';
-  if (n >= 50 && n <= 60) return 'Normal';
-  return 'Slower';
-}
-
 function roundMetric(metric, value) {
   if (value === null || value === undefined) return null;
 
@@ -173,26 +239,38 @@ function priceRangeOrder(key) {
   return index === -1 ? 999 : index;
 }
 
+function createCityRecord(city, options = {}) {
+  const seo = seoForCity(city);
+
+  return {
+    city,
+    slug: slugify(city),
+    state: 'OK',
+    marketName: `${city} Housing Market`,
+    dataTier: options.dataTier || 'basic',
+    isFullMlsokCity: options.dataTier === 'full',
+    sourceName: options.sourceName || 'FRED / Realtor.com Housing Inventory',
+    sourceUrl: options.sourceUrl || '',
+    publicMarketName: options.publicMarketName || null,
+    latestDate: options.latestDate || null,
+    latestDateLabel: options.latestDateLabel || null,
+    dataFrom: options.dataFrom || null,
+    medianDaysOnMarket: options.medianDaysOnMarket ?? null,
+    previousYearDaysOnMarket: options.previousYearDaysOnMarket ?? null,
+    previousMonthDaysOnMarket: options.previousMonthDaysOnMarket ?? null,
+    medianSalePrice: options.medianSalePrice ?? null,
+    previousYearMedianSalePrice: options.previousYearMedianSalePrice ?? null,
+    homesSold: options.homesSold ?? null,
+    previousYearHomesSold: options.previousYearHomesSold ?? null,
+    speed: options.speed || getSpeed(options.medianDaysOnMarket),
+    priceRanges: options.priceRanges || [],
+    ...seo
+  };
+}
+
 function getCityRecord(records, city) {
   if (!records.has(city)) {
-    records.set(city, {
-      marketName: `${city} Housing Market`,
-      state: 'OK',
-      city,
-      sourceName: 'MLSOK / ShowingTime',
-      sourceUrl: '',
-      latestDate: null,
-      latestDateLabel: null,
-      dataFrom: null,
-      medianDaysOnMarket: null,
-      previousYearDaysOnMarket: null,
-      medianSalePrice: null,
-      previousYearMedianSalePrice: null,
-      homesSold: null,
-      previousYearHomesSold: null,
-      speed: 'Unknown',
-      priceRanges: []
-    });
+    records.set(city, createCityRecord(city));
   }
 
   return records.get(city);
@@ -224,6 +302,62 @@ function getPriceRangeRecord(cityRecord, key) {
   }
 
   return range;
+}
+
+async function fetchFredSeries(seriesId) {
+  const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(seriesId)}`;
+
+  const response = await fetch(url, {
+    headers: { 'user-agent': 'KerrTeamMarketDataBot/3.0' }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${seriesId}: ${response.status} ${response.statusText}`);
+  }
+
+  return parseFredCsv(await response.text());
+}
+
+async function applyBasicPublicData(records) {
+  for (const publicMarket of BASIC_PUBLIC_MARKETS) {
+    try {
+      const rows = await fetchFredSeries(publicMarket.seriesId);
+      const latest = rows.at(-1);
+      const previousMonth = rows.at(-2);
+      const priorYearDate = latest.date.replace(
+        /^([0-9]{4})/,
+        String(Number(latest.date.slice(0, 4)) - 1)
+      );
+      const previousYearRow = rows.find(row => row.date === priorYearDate);
+
+      const latestValue = Math.round(latest.value);
+      const previousYearValue = previousYearRow ? Math.round(previousYearRow.value) : null;
+      const previousMonthValue = previousMonth ? Math.round(previousMonth.value) : null;
+
+      for (const city of publicMarket.cities) {
+        if (records.has(city)) continue;
+
+        records.set(city, createCityRecord(city, {
+          dataTier: 'basic',
+          sourceName: publicMarket.sourceName,
+          sourceUrl: publicMarket.sourceUrl,
+          publicMarketName: publicMarket.marketName,
+          latestDate: latest.date,
+          latestDateLabel: monthLabel(latest.date),
+          medianDaysOnMarket: latestValue,
+          previousYearDaysOnMarket: previousYearValue,
+          previousMonthDaysOnMarket: previousMonthValue,
+          speed: getSpeed(latestValue),
+          priceRanges: []
+        }));
+      }
+
+      console.log(`Loaded public basic data for ${publicMarket.marketName}`);
+    } catch (error) {
+      console.error(`ERROR: ${publicMarket.marketName}`);
+      console.error(error.message);
+    }
+  }
 }
 
 function parseShowingTimeCsv(csv) {
@@ -280,17 +414,26 @@ function previousYearRow(rows, latestDate) {
   ) || null;
 }
 
-async function fetchReport(report) {
+async function fetchMlsokReport(report) {
   const response = await fetch(report.url, {
-    headers: { 'user-agent': 'KerrTeamMarketDataBot/2.0' }
+    headers: { 'user-agent': 'KerrTeamMarketDataBot/3.0' }
   });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch ${report.url}: ${response.status} ${response.statusText}`);
   }
 
-  const csv = await response.text();
-  return parseShowingTimeCsv(csv);
+  return parseShowingTimeCsv(await response.text());
+}
+
+function markFullMlsokCity(cityRecord, report, parsed, latest) {
+  cityRecord.dataTier = 'full';
+  cityRecord.isFullMlsokCity = true;
+  cityRecord.sourceName = 'MLSOK / ShowingTime';
+  cityRecord.sourceUrl = report.url;
+  cityRecord.latestDate = latest.date.isoDate;
+  cityRecord.latestDateLabel = latest.date.label;
+  cityRecord.dataFrom = parsed.dataFrom;
 }
 
 function applyCitywideMetric(records, report, parsed) {
@@ -298,14 +441,11 @@ function applyCitywideMetric(records, report, parsed) {
   const prior = previousYearRow(parsed.rows, latest.date);
 
   for (const city of parsed.cities) {
+    const cityRecord = getCityRecord(records, city);
     const currentValue = roundMetric(report.metric, latest.values[city]);
     const previousYearValue = prior ? roundMetric(report.metric, prior.values[city]) : null;
-    const cityRecord = getCityRecord(records, city);
 
-    cityRecord.sourceUrl = report.url;
-    cityRecord.latestDate = latest.date.isoDate;
-    cityRecord.latestDateLabel = latest.date.label;
-    cityRecord.dataFrom = parsed.dataFrom;
+    markFullMlsokCity(cityRecord, report, parsed, latest);
 
     if (report.metric === 'dom') {
       cityRecord.medianDaysOnMarket = currentValue;
@@ -330,10 +470,12 @@ function applyPriceRangeMetric(records, report, parsed) {
   const prior = previousYearRow(parsed.rows, latest.date);
 
   for (const city of parsed.cities) {
-    const currentValue = roundMetric(report.metric, latest.values[city]);
-    const previousYearValue = prior ? roundMetric(report.metric, prior.values[city]) : null;
     const cityRecord = getCityRecord(records, city);
     const range = getPriceRangeRecord(cityRecord, report.priceRangeKey);
+    const currentValue = roundMetric(report.metric, latest.values[city]);
+    const previousYearValue = prior ? roundMetric(report.metric, prior.values[city]) : null;
+
+    markFullMlsokCity(cityRecord, report, parsed, latest);
 
     range.latestDate = latest.date.isoDate;
     range.latestDateLabel = latest.date.label;
@@ -366,6 +508,25 @@ function applyPriceRangeMetric(records, report, parsed) {
   }
 }
 
+async function applyMlsokFullData(records) {
+  for (const report of MLSOK_REPORTS) {
+    try {
+      const parsed = await fetchMlsokReport(report);
+
+      if (report.type === 'citywide') {
+        applyCitywideMetric(records, report, parsed);
+      } else {
+        applyPriceRangeMetric(records, report, parsed);
+      }
+
+      console.log(`Loaded MLSOK ${report.type} ${report.metric}${report.priceRangeKey ? ` ${report.priceRangeKey}` : ''}`);
+    } catch (error) {
+      console.error(`ERROR: ${report.url}`);
+      console.error(error.message);
+    }
+  }
+}
+
 async function readBrandConfig() {
   try {
     const config = JSON.parse(await fs.readFile(CONFIG_PATH, 'utf8'));
@@ -375,10 +536,29 @@ async function readBrandConfig() {
   }
 }
 
-function validateRecords(markets) {
-  const warnings = [];
+function finalizeMarkets(records) {
+  return Array.from(records.values())
+    .map(market => ({
+      ...market,
+      marketName: `${market.city} Housing Market`,
+      cities: [market.city],
+      priceRanges: market.priceRanges.sort((a, b) => priceRangeOrder(a.key) - priceRangeOrder(b.key))
+    }))
+    .sort((a, b) => {
+      const aFull = FULL_MLSOK_CITIES.includes(a.city) ? 0 : 1;
+      const bFull = FULL_MLSOK_CITIES.includes(b.city) ? 0 : 1;
 
-  for (const market of markets) {
+      if (aFull !== bFull) return aFull - bFull;
+
+      return a.city.localeCompare(b.city);
+    });
+}
+
+function validateMarkets(markets) {
+  const warnings = [];
+  const fullMarkets = markets.filter(market => market.dataTier === 'full');
+
+  for (const market of fullMarkets) {
     for (const priceRange of PRICE_RANGES) {
       const range = market.priceRanges.find(item => item.key === priceRange.key);
 
@@ -403,34 +583,11 @@ async function main() {
   const generatedAt = new Date().toISOString();
   const records = new Map();
 
-  for (const report of REPORTS) {
-    try {
-      const parsed = await fetchReport(report);
+  await applyBasicPublicData(records);
+  await applyMlsokFullData(records);
 
-      if (report.type === 'citywide') {
-        applyCitywideMetric(records, report, parsed);
-      } else {
-        applyPriceRangeMetric(records, report, parsed);
-      }
-
-      console.log(`Loaded ${report.type} ${report.metric}${report.priceRangeKey ? ` ${report.priceRangeKey}` : ''}`);
-    } catch (error) {
-      console.error(`ERROR: ${report.url}`);
-      console.error(error.message);
-    }
-  }
-
-  const markets = Array.from(records.values())
-    .filter(market => FEATURED_CITIES.includes(market.city))
-    .sort((a, b) => a.city.localeCompare(b.city))
-    .map(market => ({
-      ...market,
-      cities: [market.city],
-      marketName: `${market.city} Housing Market`,
-      priceRanges: market.priceRanges.sort((a, b) => priceRangeOrder(a.key) - priceRangeOrder(b.key))
-    }));
-
-  const warnings = validateRecords(markets);
+  const markets = finalizeMarkets(records);
+  const warnings = validateMarkets(markets);
 
   if (warnings.length) {
     console.warn('\nData warnings:');
@@ -439,11 +596,11 @@ async function main() {
 
   const output = {
     generatedAt,
-    dataMode: 'mlsok-showingtime-city-price-range-full-market-read',
+    dataMode: 'hybrid-public-basic-mlsok-full-city-seo-ready',
     brand,
-    metric: 'Median Days on Market, Homes for Sale, Pending Sales, Closed Sales, Months Supply',
-    note: 'MLSOK / ShowingTime monthly city-level data. Price-range DOM reflects recently sold market time; Homes for Sale reflects current competition; Pending Sales, Closed Sales, and Months Supply help describe demand and inventory pressure.',
-    featuredCities: FEATURED_CITIES,
+    metric: 'Hybrid market data: public basic city coverage plus MLSOK full price-range snapshots for upgraded cities',
+    note: 'Basic cities use public FRED / Realtor.com metro-level median days on market. Full cities use MLSOK / ShowingTime city and price-range data. Days on Market reflects recently sold homes; Homes for Sale reflects current competition.',
+    fullMlsokCities: FULL_MLSOK_CITIES,
     priceRanges: PRICE_RANGES,
     markets
   };
@@ -451,7 +608,9 @@ async function main() {
   await fs.mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
   await fs.writeFile(OUTPUT_PATH, JSON.stringify(output, null, 2));
 
-  console.log(`\nWrote ${OUTPUT_PATH} with ${markets.length} markets.`);
+  console.log(`\nWrote ${OUTPUT_PATH} with ${markets.length} city records.`);
+  console.log(`Full MLSOK cities: ${markets.filter(m => m.dataTier === 'full').length}`);
+  console.log(`Basic public cities: ${markets.filter(m => m.dataTier === 'basic').length}`);
   console.log(`Data mode: ${output.dataMode}`);
 }
 
